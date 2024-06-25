@@ -1,7 +1,7 @@
 import { AccountCard } from "../../components/AccountCard/AccountCard";
 import { AddTransactionModal } from "../../components/AddTransactionModal/AddTransactionModal";
 import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
-import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
+import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, LoadingContainer, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
 import { accounts } from "../../Datas";
 import { useState, useEffect } from "react"
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -63,7 +63,10 @@ export function MainPage(){
                         <h2>Minhas outras contas</h2>
                         
                         <BankAccountsContainer>
-                            {   isLoading ? <LoadingCircle></LoadingCircle> :
+                            {   isLoading ? <LoadingContainer>
+                                                <LoadingCircle></LoadingCircle> 
+                                                <span>Buscando Contas...</span>
+                                            </LoadingContainer> :
                                 accountsData?.map((account) => 
                                     <AccountCard key={account._id} acc_type={account.account_type} agency={account.agency} account={account._id} balance={account.balance}/>
                                 )

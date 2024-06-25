@@ -28,6 +28,17 @@ const LoadingCircle = () => {
 
 export default LoadingCircle;
 
+export const LoadingContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+
+    span {
+        font-weight: 500;
+        color: #c40000;
+    }
+`
 export const MainPageContainer = styled.section`
     display: flex;
     flex-direction: column;
