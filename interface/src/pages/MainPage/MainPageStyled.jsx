@@ -1,4 +1,32 @@
-import { styled } from "styled-components"
+import { styled, keyframes } from "styled-components"
+
+// Definir a animação de rotação
+const spin = keyframes`
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+`;
+
+// Criar o componente de círculo giratório
+const Spinner = styled.div`
+  border: 8px solid #f3f3f3; /* Cor de fundo */
+  border-top: 8px solid #c40000; /* Cor do círculo giratório */
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  animation: ${spin} 1s linear infinite;
+  margin: auto;
+`;
+
+// Componente principal
+const LoadingCircle = () => {
+  return <Spinner />;
+};
+
+export default LoadingCircle;
 
 export const MainPageContainer = styled.section`
     display: flex;

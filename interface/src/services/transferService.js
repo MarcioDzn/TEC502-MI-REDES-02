@@ -15,7 +15,7 @@ export async function transfer(data) {
 
 
     const body = {
-        account_cpf: "123.456.789-10",
+        account_cpf: "123.456.789-12",
         account_cnpj: "",
         bank_req_src: "localhost:8080",
         transfers: [...newData]

@@ -1,7 +1,7 @@
 import { AccountCard } from "../../components/AccountCard/AccountCard";
 import { AddTransactionModal } from "../../components/AddTransactionModal/AddTransactionModal";
 import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
-import { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
+import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
 import { accounts } from "../../Datas";
 import { useState, useEffect } from "react"
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -14,7 +14,7 @@ export function MainPage(){
 
     const mutation = useMutation({ mutationFn: transfer })
 
-    const {data: accountsData, isFetching, isError, refetch} = useQuery({
+    const {data: accountsData, isFetching, isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts"],
         queryFn: () => getAllAccounts("1650384660")
     })
@@ -37,7 +37,7 @@ export function MainPage(){
     useEffect(() => {
         const id = setInterval(() => {
             refetch();
-        }, 500000); 
+        }, 50000); 
         
         // Limpando o timer quando o componente é desmontado
         return () => clearInterval(id);
@@ -63,7 +63,7 @@ export function MainPage(){
                         <h2>Minhas outras contas</h2>
                         
                         <BankAccountsContainer>
-                            {   isFetching ? <h1>Carregando</h1> :
+                            {   isLoading ? <LoadingCircle></LoadingCircle> :
                                 accountsData?.map((account) => 
                                     <AccountCard key={account._id} acc_type={account.account_type} agency={account.agency} account={account._id} balance={account.balance}/>
                                 )
