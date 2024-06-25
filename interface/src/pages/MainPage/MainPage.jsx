@@ -4,7 +4,7 @@ import { TransactionCard } from "../../components/TransactionCard/TransactionCar
 import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, LoadingContainer, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
 import { accounts } from "../../Datas";
 import { useState, useEffect } from "react"
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useIsMutating } from '@tanstack/react-query';
 import { transfer } from "../../services/transferService";
 import { getAllAccounts } from "../../services/accountService";
 
@@ -12,7 +12,19 @@ export function MainPage(){
     const [pendingTransfers, setPendingTransfers] = useState([])
     const [addingTransfers, setAddingTransfers] = useState(false)
 
-    const mutation = useMutation({ mutationFn: transfer })
+    const mutation = useMutation({ mutationKey: 'transfer', 
+            mutationFn: 
+            transfer, 
+            onSuccess: () => {
+                refetch()
+            } 
+        }
+    )
+
+    const isMutation = useIsMutating({
+        mutationKey: 'transfer',
+        exact: true
+      })
 
     const {data: accountsData, isFetching, isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts"],
@@ -43,7 +55,6 @@ export function MainPage(){
         return () => clearInterval(id);
     }, [refetch]);
 
-    console.log(`aaaa: ${JSON.stringify(accountsData, null, 2) }`)
     return (
         <>  
             {
@@ -111,24 +122,28 @@ export function MainPage(){
                                     <button onClick={() => {setAddingTransfers(true)}}>Adicionar transferência</button>
                                 </TransactionPendingContainerEmpty>
 
-                            </> :
-                            <>
-                                <TransactionPendingContainer>
-                                    {
-                                        pendingTransfers.map((transaction) => 
-                                            <TransactionCard key={transaction._id} id={transaction._id} status={"Pendente"}
-                                                                                source={transaction.source} 
-                                                                                destination={transaction.destination} 
-                                                                                accountSourceId={transaction.account_source_id} 
-                                                                                accountDestId={transaction.account_dest_id} 
-                                                                                amount={transaction.amount}
-                                            /> 
-                                        )
-                                    }
-                                </TransactionPendingContainer>
-                            </>
+                            </> : isMutation > 0 ? 
+                                <LoadingContainer>
+                                    <LoadingCircle></LoadingCircle> 
+                                    <span>Realizando Transferência...</span>
+                                </LoadingContainer> :
+                                <>
+                                    <TransactionPendingContainer>
+                                        {
+                                            pendingTransfers.map((transaction) => 
+                                                <TransactionCard key={transaction._id} id={transaction._id} status={"Pendente"}
+                                                                                    source={transaction.source} 
+                                                                                    destination={transaction.destination} 
+                                                                                    accountSourceId={transaction.account_source_id} 
+                                                                                    accountDestId={transaction.account_dest_id} 
+                                                                                    amount={transaction.amount}
+                                                /> 
+                                            )
+                                        }
+                                    </TransactionPendingContainer>
+                                </>
                         }
-                        <AddTransaction onClick={() => {handleTransferSubmit(pendingTransfers)}}disabled={pendingTransfers.length == 0 ? true : false}>Realizar transferência</AddTransaction>
+                        <AddTransaction onClick={() => {handleTransferSubmit(pendingTransfers)}} disabled={pendingTransfers.length == 0 ? true : false || isMutation > 0}>Realizar transferência</AddTransaction>
                     </TransactionPendingContent>
                 </BankInfoWrapper>
             </MainPageContainer>

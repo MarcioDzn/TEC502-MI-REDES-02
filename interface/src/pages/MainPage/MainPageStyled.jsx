@@ -33,7 +33,8 @@ export const LoadingContainer = styled.div`
     flex-direction: column;
     align-items: center;
     margin: auto;
-
+    width: 100%;
+    
     span {
         font-weight: 500;
         color: #c40000;
