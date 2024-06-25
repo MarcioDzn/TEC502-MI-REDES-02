@@ -3,15 +3,21 @@ import { AddTransactionModal } from "../../components/AddTransactionModal/AddTra
 import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
 import { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
 import { accounts } from "../../Datas";
-import { useState } from "react"
-import { useMutation } from '@tanstack/react-query';
+import { useState, useEffect } from "react"
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { transfer } from "../../services/transferService";
+import { getAllAccounts } from "../../services/accountService";
 
 export function MainPage(){
     const [pendingTransfers, setPendingTransfers] = useState([])
     const [addingTransfers, setAddingTransfers] = useState(false)
 
     const mutation = useMutation({ mutationFn: transfer })
+
+    const {data: accountsData, isFetching, isError, refetch} = useQuery({
+        queryKey: ["accounts"],
+        queryFn: () => getAllAccounts("1650384660")
+    })
 
     function handlePendingTransfers(transfers) {
         setPendingTransfers(transfers)
@@ -28,18 +34,28 @@ export function MainPage(){
         }
     }
 
+    useEffect(() => {
+        const id = setInterval(() => {
+            refetch();
+        }, 500000); 
+        
+        // Limpando o timer quando o componente é desmontado
+        return () => clearInterval(id);
+    }, [refetch]);
+
+    console.log(`aaaa: ${JSON.stringify(accountsData, null, 2) }`)
     return (
         <>  
             {
                 addingTransfers ? 
-                <AddTransactionModal accounts={accounts} transfers={pendingTransfers} addPendingTransfers={handlePendingTransfers} addingTransfers={setAddingTransfers}/> :
-                <></>
+                    <AddTransactionModal accounts={accountsData} transfers={pendingTransfers} addPendingTransfers={handlePendingTransfers} addingTransfers={setAddingTransfers}/> :
+                    <></>
             }
             
 
             <MainPageContainer>
                 <AccountCardInfo>
-                    <AccountCard cardType="big" key={accounts[0]._id} acc_type={accounts[0].account_type} agency={"192.168.0.1"} account={accounts[0]._id} balance={accounts[0].balance}/>
+                    <AccountCard cardType="big" key={accounts[0]._id} acc_type={accounts[0].account_type} agency={accounts[0].agency} account={accounts[0]._id} balance={accounts[0].balance}/>
                 </AccountCardInfo>
                 
                 <BankInfoWrapper>
@@ -47,9 +63,9 @@ export function MainPage(){
                         <h2>Minhas outras contas</h2>
                         
                         <BankAccountsContainer>
-                            {
-                                accounts.map((account) => 
-                                    <AccountCard key={account._id} acc_type={account.account_type} agency={"192.168.0.1"} account={account._id} balance={account.balance}/>
+                            {   isFetching ? <h1>Carregando</h1> :
+                                accountsData?.map((account) => 
+                                    <AccountCard key={account._id} acc_type={account.account_type} agency={account.agency} account={account._id} balance={account.balance}/>
                                 )
                             }
                             

@@ -19,7 +19,5 @@ export async function getUserLogged(token) {
         }
     };
 
-    console.log(config)
-
     return await axios.get(`${baseURL}/users/-1`, config)
 }

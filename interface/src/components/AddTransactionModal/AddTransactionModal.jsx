@@ -40,7 +40,7 @@ export function AddTransactionModal({accounts, transfers, addPendingTransfers, a
                     <BankAccountsContainer>
                         {
                             accounts?.map((account) => 
-                                <AccountCard key={account._id} acc_type={account.account_type} agency={"localhost:8082"} account={account._id} balance={account.balance} 
+                                <AccountCard key={account._id} acc_type={account.account_type} agency={account.agency} account={account._id} balance={account.balance} 
                                             selectTransaction={handleSelectTransaction}/>
                             )
                         }

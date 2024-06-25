@@ -1,7 +1,6 @@
 import { AmountInfo, DestinationInfo, InfoContainer, SourceInfo, TransactionCardContainer, TransactionDestination, TransactionDestinationId, TransactionSource, TransactionSourceId, TransactionStatus } from "./TransactionCardStyled";
 
 export function TransactionCard({id, status, source, destination, accountSourceId, accountDestId, amount, removeTransfer}) {
-    console.log(id)
     return (
         <TransactionCardContainer>
             <TransactionStatus>
