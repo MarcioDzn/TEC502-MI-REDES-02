@@ -393,9 +393,9 @@ def get_all_account_interbanks(id):
         for search in search_by:
             try:
                 if (not search.get("cpf")):
-                    response = requests.get(f'{ip}/v1/api/accounts?cnpj={search.get("cnpj")}', timeout=1)
+                    response = requests.get(f'{ip}/v1/api/accounts?cnpj={search.get("cnpj")}', timeout=10)
                 else:
-                    response = requests.get(f'{ip}/v1/api/accounts?cpf={search.get("cpf")}', timeout=1)
+                    response = requests.get(f'{ip}/v1/api/accounts?cpf={search.get("cpf")}', timeout=10)
 
                 result = response.json()
                 for r in result:
@@ -405,7 +405,7 @@ def get_all_account_interbanks(id):
             except:
                 pass
             
-
+    results = [item for sublist in results for item in sublist]
     return jsonify({"data": results}), 200
 
 
