@@ -369,6 +369,46 @@ def get_account(id):
     return account, 200
     
 
+# encontra todas as contas com um determinado CPF ou CNPJ em TODOS os bancos na rede
+@app.route('/v1/api/accounts/all/<id>', methods=["GET"])
+def get_all_account_interbanks(id):
+    # pega o(s) cpf(s) ou o cnpj associado(s) a essa conta
+    account = account_db.get_account_by_id(id)
+
+    if (account == None):
+        return jsonify({"message": "Conta não encontrada"}), 404
+
+    user_list = [user_db.get_user_by_id(user_id) for user_id in account["users"]]
+
+    search_by = [] # busca por cpf (um ou mais) ou cnpj (um)
+    for user in user_list:
+        if (user["cpf"] == None):
+            search_by.append({"cnpj": user["cnpj"]})
+        else:
+            search_by.append({"cpf": user["cpf"]})
+
+    # realiza a busca
+    results = []
+    for ip in banks.values():
+        for search in search_by:
+            try:
+                if (not search.get("cpf")):
+                    response = requests.get(f'{ip}/v1/api/accounts?cnpj={search.get("cnpj")}', timeout=1)
+                else:
+                    response = requests.get(f'{ip}/v1/api/accounts?cpf={search.get("cpf")}', timeout=1)
+
+                result = response.json()
+                for r in result:
+                    r["agency"] = ip[7:]
+                results.append(result)
+
+            except:
+                pass
+            
+
+    return jsonify({"data": results}), 200
+
+
 def send_transfer_request(url, data):
     try:
         response = requests.post(url, json=data)
