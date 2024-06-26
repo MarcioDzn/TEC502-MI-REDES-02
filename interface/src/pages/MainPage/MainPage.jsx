@@ -19,6 +19,7 @@ export function MainPage(){
             transfer, 
             onSuccess: () => {
                 refetch()
+                setPendingTransfers([])
                 Store.addNotification({
                     title: "Sucesso",
                     message: "Transferência realizada com sucesso.",
