@@ -19,6 +19,17 @@ export function MainPage(){
             transfer, 
             onSuccess: () => {
                 refetch()
+                Store.addNotification({
+                    title: "Sucesso",
+                    message: "Transferência realizada com sucesso.",
+                    type: "success",
+                    insert: "top",
+                    container: "bottom-right",
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true
+                    }
+                });
             },
             onError: (error) => {
                 Store.addNotification({
@@ -43,7 +54,7 @@ export function MainPage(){
 
     const {data: accountsData, isFetching, isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts"],
-        queryFn: () => getAllAccounts("9137373508")
+        queryFn: () => getAllAccounts("6677315414")
     })
 
     function handlePendingTransfers(transfers) {
