@@ -8,3 +8,10 @@ export async function getAllAccounts(id) {
 
     return response.data.data
 }
+
+export async function getUserAccount(id) {
+    const response = await axios.get(`${baseURL}/accounts/${id}`)
+
+
+    return response.data
+}

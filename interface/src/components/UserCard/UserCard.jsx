@@ -1,10 +1,11 @@
-import { UserCPF, UserCardContainer } from "./UserCardStyled";
+import { UserCNPJ, UserCPF, UserCardContainer } from "./UserCardStyled";
 
-export function UserCard() {
+export function UserCard({name, cpf, cnpj}) {
     return (
         <UserCardContainer>
-            <h1>John Doe</h1>
-            <UserCPF>111.111.111-11</UserCPF>
+            <h1>{name}</h1>
+            {cpf && <UserCPF><span>CPF:</span> {cpf}</UserCPF>}
+            {cnpj && <UserCNPJ><span>CNPJ:</span> {cnpj}</UserCNPJ>}
         </UserCardContainer>
     )
 }

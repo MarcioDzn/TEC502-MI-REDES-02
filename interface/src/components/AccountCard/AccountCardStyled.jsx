@@ -5,7 +5,7 @@ export const AccountCardContainer = styled.div`
     flex-direction: ${(props) => props.card_type == "big" ? "column;" : "row;"};
     align-items: ${(props) => props.card_type == "big" ? "normal;" : "center;"};
     width: ${(props) => props.card_type == "big" ? `450px;` : `100%;`};
-    height: ${(props) => props.card_type == "big" ? "fit-content;" : "80px;"}
+    height: ${(props) => props.card_type == "big" ? "fit-content" : "80px;"}
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     padding: 15px;
     margin: ${(props) => props.card_type == "big" ? "auto;" : "normal;"};

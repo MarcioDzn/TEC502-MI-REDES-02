@@ -6,7 +6,7 @@ import { accounts } from "../../Datas";
 import { useState, useEffect } from "react"
 import { useMutation, useQuery, useIsMutating } from '@tanstack/react-query';
 import { transfer } from "../../services/transferService";
-import { getAllAccounts } from "../../services/accountService";
+import { getAllAccounts, getUserAccount } from "../../services/accountService";
 import { Store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 
@@ -19,6 +19,7 @@ export function MainPage(){
             transfer, 
             onSuccess: () => {
                 refetch()
+                refetchUserAccount()
                 setPendingTransfers([])
                 Store.addNotification({
                     title: "Sucesso",
@@ -58,6 +59,12 @@ export function MainPage(){
         queryFn: () => getAllAccounts("6677315414")
     })
 
+    const {data: userAccount, isFetching: isFetchingUserAccount, isLoading: isLoadingUserAccount, isError: isErrorUserAccount, refetch: refetchUserAccount} = useQuery({
+        queryKey: ["userAccount"],
+        queryFn: () => getUserAccount("6677315414"),
+        enabled: false,  // A query não será executada automaticamente
+    })
+
     function handlePendingTransfers(transfers) {
         setPendingTransfers(transfers)
     }
@@ -76,11 +83,16 @@ export function MainPage(){
     useEffect(() => {
         const id = setInterval(() => {
             refetch();
+            
         }, 50000); 
         
         // Limpando o timer quando o componente é desmontado
         return () => clearInterval(id);
     }, [refetch]);
+
+    useEffect(() => {
+        refetchUserAccount();
+    }, []);
 
     return (
         <>  
@@ -93,7 +105,14 @@ export function MainPage(){
 
             <MainPageContainer>
                 <AccountCardInfo>
-                    <AccountCard cardType="big" key={accounts[0]._id} acc_type={accounts[0].account_type} agency={accounts[0].agency} account={accounts[0]._id} balance={accounts[0].balance}/>
+                    <AccountCard cardType="big" 
+                        key={userAccount?._id} 
+                        acc_type={userAccount?.account_type} 
+                        agency={userAccount?.agency} 
+                        account={userAccount?._id} 
+                        balance={userAccount?.balance}
+                        users={userAccount?.users}
+                    />
                 </AccountCardInfo>
                 
                 <BankInfoWrapper>

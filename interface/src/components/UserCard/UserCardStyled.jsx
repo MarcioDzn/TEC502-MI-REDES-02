@@ -16,9 +16,13 @@ export const UserCardContainer = styled.div`
 `
 
 export const UserCPF = styled.span`
-
+    span {
+        font-weight: bold;
+    }    
 `
 
 export const UserCNPJ = styled.span`
-
+    span {
+        font-weight: bold;
+    }
 `
