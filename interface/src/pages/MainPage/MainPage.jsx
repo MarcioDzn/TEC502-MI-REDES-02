@@ -148,14 +148,13 @@ export function MainPage(){
                                     <button onClick={() => {setAddingTransfers(true)}}>Adicionar transferência</button>
                                 </TransactionPendingContainerEmpty>
 
-                            </> : isMutation > 0 ? 
-                                <LoadingContainer>
-                                    <LoadingCircle></LoadingCircle> 
-                                    <span>Realizando Transferência...</span>
-                                </LoadingContainer> :
-                                <>
-                                    <TransactionPendingContainer>
-                                        {
+                            </> : 
+                                <TransactionPendingContainer>
+                                    {isMutation > 0 ? 
+                                    <LoadingContainer>
+                                        <LoadingCircle></LoadingCircle> 
+                                        <span>Realizando Transferência...</span>
+                                    </LoadingContainer> :
                                             pendingTransfers.map((transaction) => 
                                                 <TransactionCard key={transaction._id} id={transaction._id} status={"Pendente"}
                                                                                     source={transaction.source} 
@@ -166,8 +165,8 @@ export function MainPage(){
                                                 /> 
                                             )
                                         }
-                                    </TransactionPendingContainer>
-                                </>
+                                </TransactionPendingContainer>
+                                
                         }
                         <AddTransaction onClick={() => {handleTransferSubmit(pendingTransfers)}} disabled={pendingTransfers.length == 0 ? true : false || isMutation > 0}>Realizar transferência</AddTransaction>
                     </TransactionPendingContent>
