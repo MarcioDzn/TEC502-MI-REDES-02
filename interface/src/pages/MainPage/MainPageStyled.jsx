@@ -12,18 +12,18 @@ const spin = keyframes`
 
 // Criar o componente de círculo giratório
 const Spinner = styled.div`
-  border: 8px solid #f3f3f3; /* Cor de fundo */
-  border-top: 8px solid #c40000; /* Cor do círculo giratório */
+  border: ${(props) => props.size == "normal" ? `8px` : `3px`} solid #f3f3f3; /* Cor de fundo */
+  border-top: ${(props) => props.size == "normal" ? `8px` : `3px`} solid #c40000; /* Cor do círculo giratório */
   border-radius: 50%;
-  width: 35px;
-  height: 35px;
+  width: ${(props) => props.size == "normal" ? `35px` : `20px`};
+  height: ${(props) => props.size == "normal" ? `35px` : `20px`};
   animation: ${spin} 1s linear infinite;
-  margin: auto;
+  margin: ${(props) => props.size == "normal" ? `auto` : `none`};
 `;
 
 // Componente principal
-const LoadingCircle = () => {
-  return <Spinner />;
+const LoadingCircle = ({size}) => {
+  return <Spinner size={size}/>;
 };
 
 export default LoadingCircle;
@@ -86,6 +86,14 @@ export const BankAccountsContainer = styled.div`
         border-radius: 3px; 
     }
 
+`
+
+export const OtherAccountsH2 = styled.h1`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-right: 15px;
 `
 
 export const TransactionHistoryContainer = styled.div`

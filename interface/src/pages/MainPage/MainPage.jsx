@@ -1,7 +1,7 @@
 import { AccountCard } from "../../components/AccountCard/AccountCard";
 import { AddTransactionModal } from "../../components/AddTransactionModal/AddTransactionModal";
 import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
-import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, LoadingContainer, MainPageContainer, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
+import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, LoadingContainer, MainPageContainer, OtherAccountsH2, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
 import { accounts } from "../../Datas";
 import { useState, useEffect } from "react"
 import { useMutation, useQuery, useIsMutating } from '@tanstack/react-query';
@@ -97,11 +97,11 @@ export function MainPage(){
                 
                 <BankInfoWrapper>
                     <div>
-                        <h2>Minhas outras contas</h2>
+                        <OtherAccountsH2>Minhas outras contas {isFetching && !isLoading ? <LoadingCircle></LoadingCircle>  : <></>}</OtherAccountsH2>
                         
                         <BankAccountsContainer>
                             {   isLoading ? <LoadingContainer>
-                                                <LoadingCircle></LoadingCircle> 
+                                                <LoadingCircle size={"normal"}></LoadingCircle> 
                                                 <span>Buscando Contas...</span>
                                             </LoadingContainer> :
                                 accountsData?.map((account) => 
@@ -152,7 +152,7 @@ export function MainPage(){
                                 <TransactionPendingContainer>
                                     {isMutation > 0 ? 
                                     <LoadingContainer>
-                                        <LoadingCircle></LoadingCircle> 
+                                        <LoadingCircle size={"normal"}></LoadingCircle> 
                                         <span>Realizando Transferência...</span>
                                     </LoadingContainer> :
                                             pendingTransfers.map((transaction) => 
