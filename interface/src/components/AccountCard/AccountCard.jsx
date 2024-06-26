@@ -41,7 +41,7 @@ export function AccountCard({cardType, selectTransaction, acc_type, agency, acco
                     </BalanceContainer>
                 </>
             }
-            
+        
         </AccountCardContainer>
     )
 }

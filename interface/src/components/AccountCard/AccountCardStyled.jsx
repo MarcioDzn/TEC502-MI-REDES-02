@@ -16,6 +16,13 @@ export const AccountCardContainer = styled.div`
     background: linear-gradient(45deg, #c40000, #8b0000 30%, #c40000 90%);
     color: white;
     cursor: pointer;
+
+    transition: all .65s cubic-bezier(0.18, 0.9, 0.58, 1);
+    
+    &:hover {
+        transform: scale(1.02);
+    }
+
 `
 
 export const UserContainer = styled.div`

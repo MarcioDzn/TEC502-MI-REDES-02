@@ -119,7 +119,7 @@ export const TransactionPendingContainer = styled.div`
 
     overflow: scroll;
     overflow-x: hidden;
-    padding: 5px 5px 5px 0px;
+    padding: 5px 5px 5px 5px;
 
     background-color: linear-gradient(45deg, #c40000, #8b0000 30%, #c40000 90%);
 
