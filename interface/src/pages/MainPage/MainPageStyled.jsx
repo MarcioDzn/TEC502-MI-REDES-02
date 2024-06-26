@@ -88,7 +88,7 @@ export const BankAccountsContainer = styled.div`
 
 `
 
-export const OtherAccountsH2 = styled.h1`
+export const OtherAccountsH2 = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;

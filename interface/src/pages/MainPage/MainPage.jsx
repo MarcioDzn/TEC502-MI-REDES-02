@@ -98,7 +98,7 @@ export function MainPage(){
                 
                 <BankInfoWrapper>
                     <div>
-                        <OtherAccountsH2>Minhas outras contas {isFetching && !isLoading ? <LoadingCircle></LoadingCircle>  : <></>}</OtherAccountsH2>
+                        <OtherAccountsH2><h2>Minhas outras contas</h2> {isFetching && !isLoading ? <LoadingCircle></LoadingCircle>  : <></>}</OtherAccountsH2>
                         
                         <BankAccountsContainer>
                             {   isLoading ? <LoadingContainer>
