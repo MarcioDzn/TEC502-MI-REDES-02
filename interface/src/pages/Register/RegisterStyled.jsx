@@ -81,3 +81,27 @@ export const RegisterForm = styled.form`
         }
     }
 `
+
+export const InputButton = styled.button`
+    cursor: pointer;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    background-color: white !important;
+    border: 1px solid #ebebeb !important;
+    border-radius: 5px !important;
+    color: black !important;
+
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        border: 1px solid darkgrey !important;
+    }
+
+    background-color: ${(props) => props.highlighted == "true" ? "#c40000 !important;": "background-color: white !important;"};
+    color: ${(props) => props.highlighted == "true" ? "white !important;": "background-color: black !important;"};
+
+    &:disabled {
+        background-color: #d6d6d6 !important;
+        color: white !important;
+        border: 1px solid #d6d6d6 !important;
+    }
+`

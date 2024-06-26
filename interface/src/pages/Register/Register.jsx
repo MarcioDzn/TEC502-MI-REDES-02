@@ -1,5 +1,5 @@
 import { useState } from "react"; // Importe o useState
-import { RegisterContainer, RegisterContent, RegisterForm, TypeContainer } from "./RegisterStyled";
+import { InputButton, RegisterContainer, RegisterContent, RegisterForm, TypeContainer } from "./RegisterStyled";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signupSchema } from "../../schemas/signupSchema";
@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 export function Register() {
     const [cpfError, setCpfError] = useState(null);
     const [userType, setUserType] = useState(0); // 0 - fisica / 1 - jurídica
-    const [cccountType, setAccountType] = useState(0); // 0 - normal / 1 - conjunta
+    const [accountType, setAccountType] = useState(0); // -1 - nada / 0 - normal / 1 - conjunta
 
     const mutation = useMutation({ mutationFn: registerUser })
     const {
@@ -57,13 +57,13 @@ export function Register() {
                 <h1>Registre-se</h1>
                 <RegisterForm onSubmit={handleSubmitSignup(upHandleSubmit)}>
                     <TypeContainer>
-                        <input type="button" name="userType" id="pessoaFisica" value="Pessoa Física"/>
-                        <input type="button" name="userType" id="pessoaJuridica" value="Pessoa Jurídica"/>
+                        <InputButton type={"button"} onClick={() => {setUserType(0); setAccountType(0)}} highlighted={(userType == 0).toString()} name="userType" id="pessoaFisica">Pessoa Física</InputButton>
+                        <InputButton type={"button"} onClick={() => {setUserType(1); setAccountType(-1)}} highlighted={(userType == 1).toString()} name="userType" id="pessoaJuridica">Pessoa Jurídica</InputButton>
                     </TypeContainer>
 
                     <TypeContainer>
-                        <input type="button" name="accountType" id="contaNormal" value="Conta normal"/>
-                        <input type="button" name="accountType" id="contaConjunta" value="Conta Conjunta"/>
+                        <InputButton type={"button"} onClick={() => {setAccountType(0)}} highlighted={(accountType == 0 && userType == 0).toString()} name="userType" id="contaNormal" disabled={userType == 1}>Conta Normal</InputButton>
+                        <InputButton type={"button"} onClick={() => {setAccountType(1)}} highlighted={(accountType == 1 && userType == 0).toString()} name="userType" id="contaConjunta" disabled={userType == 1}>Conta Conjunta</InputButton>
                     </TypeContainer>
 
                     <input type="text" placeholder="Nome" {...registerSignup("name")} />
@@ -74,7 +74,10 @@ export function Register() {
                         {...registerSignup("cpf")}
                         onChange={handleCpfChange} 
                     />
+
+                    
                     {errorsSignup.cpf && <ErrorSpan>{errorsSignup.cpf.message}</ErrorSpan>}
+                    
                     {cpfError && <ErrorSpan>{cpfError}</ErrorSpan>} 
                     <input type="password" placeholder="Senha" name="password" {...registerSignup("password")} />
                     {errorsSignup.password && <ErrorSpan>{errorsSignup.password.message}</ErrorSpan>}
