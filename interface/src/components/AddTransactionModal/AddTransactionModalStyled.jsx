@@ -166,7 +166,7 @@ export const BankAccountsContainer = styled.div`
 
     overflow: scroll;
     overflow-x: hidden;
-    padding: 5px 5px 5px 0px;
+    padding: 5px 5px 5px 5px;
 
     /* Personalizar a barra de rolagem vertical */
     &::-webkit-scrollbar {
