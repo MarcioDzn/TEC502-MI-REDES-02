@@ -7,6 +7,8 @@ import { useState, useEffect } from "react"
 import { useMutation, useQuery, useIsMutating } from '@tanstack/react-query';
 import { transfer } from "../../services/transferService";
 import { getAllAccounts } from "../../services/accountService";
+import { Store } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
 
 export function MainPage(){
     const [pendingTransfers, setPendingTransfers] = useState([])
@@ -17,7 +19,20 @@ export function MainPage(){
             transfer, 
             onSuccess: () => {
                 refetch()
-            } 
+            },
+            onError: (error) => {
+                Store.addNotification({
+                    title: "Erro",
+                    message: "Ocorreu um erro durante a transferência.",
+                    type: "danger",
+                    insert: "top",
+                    container: "bottom-right",
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true
+                    }
+                });
+            }
         }
     )
 
@@ -28,7 +43,7 @@ export function MainPage(){
 
     const {data: accountsData, isFetching, isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts"],
-        queryFn: () => getAllAccounts("1650384660")
+        queryFn: () => getAllAccounts("9137373508")
     })
 
     function handlePendingTransfers(transfers) {

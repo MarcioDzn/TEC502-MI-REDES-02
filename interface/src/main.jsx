@@ -12,6 +12,7 @@ import { queryClient } from './services/queryClient.js';
 import UserProvider from './context/UserContext'
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { MainPage } from './pages/MainPage/MainPage'
+import { ReactNotifications } from 'react-notifications-component'
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <UserProvider>
 
       <QueryClientProvider client={queryClient}>
+        <ReactNotifications />
         <RouterProvider router={router}/> 
       </QueryClientProvider>
 
