@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 export function Register() {
     const [cpfError, setCpfError] = useState(null);
+    const [cnpjError, setCnpjError] = useState(null);
     const [userType, setUserType] = useState(0); // 0 - fisica / 1 - jurídica
     const [accountType, setAccountType] = useState(0); // -1 - nada / 0 - normal / 1 - conjunta
 
@@ -22,6 +23,7 @@ export function Register() {
     const navigate = useNavigate()
 
     async function upHandleSubmit(data) {
+        console.log("Teste")
         try {
             const response = await mutation.mutateAsync(data)
 
@@ -46,9 +48,23 @@ export function Register() {
             .replace(/(-\d{2})\d+?$/, "$1");
     }
 
+    function formatCNPJ(value) {
+        const cleanedValue = value.replace(/\D/g, "").slice(0, 14); // Limita a 14 caracteres numéricos
+        
+        return cleanedValue
+            .replace(/(\d{2})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{4})(\d{2})$/, "$1/$2-$3");
+    }
+
     function handleCpfChange(event) {
         event.target.value = formatCPF(event.target.value);
         setCpfError(null); // limpa a mensagem de erro do CPF
+    }
+
+    function handleCnpjChange(event) {
+        event.target.value = formatCNPJ(event.target.value);
+        setCnpjError(null); // limpa a mensagem de erro do CPF
     }
 
     return (
@@ -79,6 +95,7 @@ export function Register() {
                                 onChange={handleCpfChange} 
                             />
                             {errorsSignup.cpf && <ErrorSpan>{errorsSignup.cpf.message}</ErrorSpan>}
+                            {cpfError && <ErrorSpan>{cpfError}</ErrorSpan>} 
                         </>
                     }
 
@@ -89,13 +106,15 @@ export function Register() {
                                 type="text"
                                 placeholder="CNPJ"
                                 {...registerSignup("cnpj")} 
+                                onChange={handleCnpjChange} 
                             />
                             {errorsSignup.cnpj && <ErrorSpan>{errorsSignup.cnpj.message}</ErrorSpan>}
+                            {cnpjError && <ErrorSpan>{cnpjError}</ErrorSpan>} 
                         </>
 
                     }
                     
-                    {cpfError && <ErrorSpan>{cpfError}</ErrorSpan>} 
+ 
                     <input type="password" placeholder="Senha" name="password" {...registerSignup("password")} />
                     {errorsSignup.password && <ErrorSpan>{errorsSignup.password.message}</ErrorSpan>}
                     <input type="password" placeholder="Confirmar senha" name="confirmPassword" {...registerSignup("confirmPassword")} />
