@@ -9,7 +9,8 @@ from TransferModel import TransferModel
 from Token import Token
 from utils import *
 from time import sleep, time
-from threading import Thread
+from threading import Thread, Lock
+
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -18,6 +19,9 @@ user_db = UserDatabase()
 
 app = Flask(__name__)
 CORS(app)
+
+transfer_lock = Lock()
+transfer_list_lock = Lock()
 
 CURRENT_BANK = 0
 
@@ -420,7 +424,6 @@ def send_transfer_request(url, data):
 @app.route('/v1/api/transfers', methods=["PATCH"])
 def transfer_funds():
     global is_transferring
-    is_transferring = True
 
     data = request.get_json()
 
@@ -432,10 +435,11 @@ def transfer_funds():
 
     transfers = data["transfers"] # lista de transferências
 
-    if (not list(transfer_list.keys())):
-        operation_id = 0
-    else:
-        operation_id = list(transfer_list.keys())[-1] + 1
+    with transfer_list_lock:
+        if (not transfer_list):
+            operation_id = 0
+        else:
+            operation_id = max(transfer_list.keys()) + 1
 
     transfer_list[operation_id] = []
     for index, transf in enumerate(transfers):
@@ -447,16 +451,18 @@ def transfer_funds():
     # aguarda até o token estar ativo para processar as requisições
     while token.status != "active":
         pass
-
+    
+    print("a")
     # envia as requisições de transferência
     if (not transfer_list[operation_id]):
         return jsonify({"message": "Nenhuma transação foi solicitada"}), 500
     
-
-    # garantir que só seja enviada se a OPERAÇÃO for a PRIMEIRA da lista 
-    while list(transfer_list.keys()).index(operation_id) != 0:
+    print("b")
+    # garantir que só seja enviada a PRIMEIRA OPERAÇÃO da lista e quando o token estiver ATIVO
+    while list(transfer_list.keys()).index(operation_id) != 0 or token.status != "active":
         pass
 
+    print("c")
     transfer_logs = []
     for index, operation in enumerate(transfer_list[operation_id]):
         try:
@@ -556,74 +562,79 @@ def transfer_funds():
             break
         
     # se ocorreu algum erro precisa dar rollback
-    if (transaction_error):
+    if transaction_error:
         for i in range(error_index):
             transfer = transfer_list[operation_id][i]
             log = transfer_logs[i]
             print("[LOG]: {}".format(log))
 
-            if (not log["source_commit"] and log["destination_commit"]):
+            if not log["source_commit"] and log["destination_commit"]:
                 data_destination = {
                     "transfer_id": transfer.id,
                     "account_id": transfer.account_dest_id,
                     "amount": transfer.amount,
                     "rollback_type": "destination",
-                    "action": "change_amount" # retira o dinheiro
-                } 
+                    "action": "change_amount"  # retira o dinheiro
+                }
 
-                response_destination = requests.patch(f'http://{transfer.destination}/v1/api/accounts/rollbacks', 
-                                        json=data_destination,
-                                        timeout=4)
-                
+                response_destination = requests.patch(f'http://{transfer.destination}/v1/api/accounts/rollbacks',
+                                                      json=data_destination,
+                                                      timeout=4)
+
                 data_source = {
                     "transfer_id": transfer.id,
                     "account_id": transfer.account_source_id,
                     "amount": transfer.amount,
                     "rollback_type": "source",
-                    "action": "add_history" # adiciona no histórico
-                } 
+                    "action": "add_history"  # adiciona no histórico
+                }
 
-                response_source = requests.patch(f'http://{transfer.source}/v1/api/accounts/rollbacks', 
-                                        json=data_source,
-                                        timeout=4)
-                
+                response_source = requests.patch(f'http://{transfer.source}/v1/api/accounts/rollbacks',
+                                                 json=data_source,
+                                                 timeout=4)
 
-            if (log["destination_commit"] and log["source_commit"]):
+            if log["destination_commit"] and log["source_commit"]:
                 data_destination = {
                     "transfer_id": transfer.id,
                     "account_id": transfer.account_dest_id,
                     "amount": transfer.amount,
                     "rollback_type": "destination",
-                    "action": "change_amount" # retira o dinheiro
-                } 
+                    "action": "change_amount"  # retira o dinheiro
+                }
 
-                response_destination = requests.patch(f'http://{transfer.destination}/v1/api/accounts/rollbacks', 
-                                        json=data_destination,
-                                        timeout=4)
-                
+                response_destination = requests.patch(f'http://{transfer.destination}/v1/api/accounts/rollbacks',
+                                                      json=data_destination,
+                                                      timeout=4)
+
                 data_source = {
                     "transfer_id": transfer.id,
                     "account_id": transfer.account_source_id,
                     "amount": transfer.amount,
                     "rollback_type": "source",
-                    "action": "change_amount" # retira o dinheiro (inclui alterar o histórico)
-                } 
+                    "action": "change_amount"  # retira o dinheiro (inclui alterar o histórico)
+                }
 
-                response_source = requests.patch(f'http://{transfer.source}/v1/api/accounts/rollbacks', 
-                                        json=data_source,
-                                        timeout=4)
+                response_source = requests.patch(f'http://{transfer.source}/v1/api/accounts/rollbacks',
+                                                 json=data_source,
+                                                 timeout=4)
 
         print("[ROLLBACK FINALIZADO]")
 
-    # remover a operação da lista quando termina (com erro ou não)
-
-    key = list(transfer_list.keys())[0]
-    transfer_list.pop(key)
-
-    # só tira o token quando todas as transações terminarem (APENAS PARA TESTES ENQUANTO N SEI RESOLVER :P)
-    if (len(transfer_list) == 0):
+    
+    with transfer_lock:
         is_transferring = False
 
+    # espera o token ficar inativo pra remover da lista
+    while token.status == "active":
+        pass
+
+    # remove a operação da lista quando termina (com erro ou não)
+    with transfer_list_lock:
+        key = list(transfer_list.keys())[0]
+        transfer_list.pop(key)
+
+    print("[LISTA DE TRANSFERÊNCIAS 2]: {}".format(transfer_list))
+    
     if (transaction_error):
         return jsonify({"message": "Erro durante a transação"}), 400
     
