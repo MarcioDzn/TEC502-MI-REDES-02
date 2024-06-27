@@ -18,7 +18,7 @@ export function Register() {
         register: registerSignup,
         handleSubmit: handleSubmitSignup,
         formState: { errors: errorsSignup }
-    } = useForm({ resolver: zodResolver(signupSchema) });
+    } = useForm({ resolver: zodResolver(signupSchema(userType === 1)) });
     const navigate = useNavigate()
 
     async function upHandleSubmit(data) {
@@ -68,15 +68,32 @@ export function Register() {
 
                     <input type="text" placeholder="Nome" {...registerSignup("name")} />
                     {errorsSignup.name && <ErrorSpan>{errorsSignup.name.message}</ErrorSpan>}
-                    <input
-                        type="text"
-                        placeholder="CPF"
-                        {...registerSignup("cpf")}
-                        onChange={handleCpfChange} 
-                    />
 
-                    
-                    {errorsSignup.cpf && <ErrorSpan>{errorsSignup.cpf.message}</ErrorSpan>}
+                    {
+                        userType == 0 &&
+                        <>
+                            <input
+                                type="text"
+                                placeholder="CPF"
+                                {...registerSignup("cpf")}
+                                onChange={handleCpfChange} 
+                            />
+                            {errorsSignup.cpf && <ErrorSpan>{errorsSignup.cpf.message}</ErrorSpan>}
+                        </>
+                    }
+
+
+                    {userType == 1 &&
+                        <>
+                            <input
+                                type="text"
+                                placeholder="CNPJ"
+                                {...registerSignup("cnpj")} 
+                            />
+                            {errorsSignup.cnpj && <ErrorSpan>{errorsSignup.cnpj.message}</ErrorSpan>}
+                        </>
+
+                    }
                     
                     {cpfError && <ErrorSpan>{cpfError}</ErrorSpan>} 
                     <input type="password" placeholder="Senha" name="password" {...registerSignup("password")} />
