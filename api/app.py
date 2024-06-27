@@ -229,8 +229,8 @@ def register_account():
     if user_type == "juridica" and account_type == "conjunta":
         return jsonify({"message":"Pessoas jurídicas não podem participar de uma conta conjunta"}), 403
     
-    # uma conta deve ter pelo menos um nome e um cpf de usuário
-    if (not primary_name or not primary_cpf):
+    # uma conta com usuário fisico deve ter pelo menos um nome e um cpf de usuário
+    if (user_type == "fisica" and (not primary_name or not primary_cpf)):
         return jsonify({"message":"Uma conta deve ter pelo menos um usuário associado."}), 400
     
     # uma conta conjunta deve ter dois usuários com campos válidos
@@ -273,9 +273,8 @@ def register_account():
     # se o usuário já existe não precisa criar
     if (user_type == "fisica"):
         user = user_db.get_user_by_cpf(primary_cpf)
-    print("[USER]: {}".format(user))
     
-    if not user and user_type == "juridica":
+    if user_type == "juridica":
         user = user_db.get_user_by_cnpj(cnpj)
     
     print("[PRIMARY_CPF]: {}".format(primary_cpf))

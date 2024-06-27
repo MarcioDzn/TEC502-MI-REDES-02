@@ -10,7 +10,6 @@ export const RegisterContainer = styled.section`
 export const RegisterContent = styled.div`
     text-align: center;
     width: 360px;
-    height: 500px;
     padding: 20px;
 
     h1 {

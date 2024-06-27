@@ -56,12 +56,12 @@ export function MainPage(){
 
     const {data: accountsData, isFetching, isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts"],
-        queryFn: () => getAllAccounts("6677315414")
+        queryFn: () => getAllAccounts("1440741980")
     })
 
     const {data: userAccount, isFetching: isFetchingUserAccount, isLoading: isLoadingUserAccount, isError: isErrorUserAccount, refetch: refetchUserAccount} = useQuery({
         queryKey: ["userAccount"],
-        queryFn: () => getUserAccount("6677315414"),
+        queryFn: () => getUserAccount("1440741980"),
         enabled: false,  // A query não será executada automaticamente
     })
 

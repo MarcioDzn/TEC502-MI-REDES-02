@@ -3,7 +3,6 @@ import { Outlet, Link, useLocation } from "react-router-dom"
 import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import Cookies from "js-cookie";
-import { getUserLogged } from "../../services/userService";
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom";
 
@@ -11,21 +10,21 @@ export function Navbar() {
     const location = useLocation();
     const {user, setUser} = useContext(UserContext);
 
-    async function findUserLogged(token) {
-        try {
-            const response = await getUserLogged(token);
-            console.log("a")
-            setUser(response.data)
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    // async function findUserLogged(token) {
+    //     try {
+    //         const response = await getUserLogged(token);
+    //         console.log("a")
+    //         setUser(response.data)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     useEffect(() => {
         const token = Cookies.get("token")
         console.log(token)
         if (token) {
-            findUserLogged(token);
+            // findUserLogged(token);
         }
     }, [])
 
