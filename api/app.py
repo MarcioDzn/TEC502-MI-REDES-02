@@ -624,8 +624,10 @@ def transfer_funds():
     with transfer_lock:
         is_transferring = False
 
-    # espera o token ficar inativo pra remover da lista
-    while token.status == "active":
+
+    # espera o token ficar inativo pra remover da lista ou espera 10 segundos
+    start_time = time()
+    while token.status == "active" and (time() - start_time) < 10:
         pass
 
     # remove a operação da lista quando termina (com erro ou não)
@@ -634,7 +636,7 @@ def transfer_funds():
         transfer_list.pop(key)
 
     print("[LISTA DE TRANSFERÊNCIAS 2]: {}".format(transfer_list))
-    
+
     if (transaction_error):
         return jsonify({"message": "Erro durante a transação"}), 400
     
