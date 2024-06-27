@@ -10,6 +10,7 @@ from Token import Token
 from utils import *
 from time import sleep, time
 from threading import Thread, Lock
+import os
 
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -23,13 +24,31 @@ CORS(app)
 transfer_lock = Lock()
 transfer_list_lock = Lock()
 
-CURRENT_BANK = 0
+CURRENT_BANK = int(os.getenv('CURRENT_BANK'))
+print(CURRENT_BANK)
 
-banks = {
-    "0": "http://127.0.0.1:8080",
-    "1": "http://127.0.0.1:8081",
-    "2": "http://127.0.0.1:8082"
-}
+BANKS = os.getenv('BANKS')
+
+banks = {}
+for i, bank in enumerate(BANKS.split("::")):
+    banks[f"{i}"] = f"http://{bank}"
+
+print(f"BANCOS: {banks}")
+
+# banks = {
+#    "0": "http://172.16.103.12:8080",
+#    "1": "http://172.16.103.11:8080",
+#    "2": "http://172.16.103.13:8080"
+# }
+
+transfer_list = {}
+
+if (CURRENT_BANK == 0):
+    token = Token("active")
+    print("[TOKEN STATUS]: Token iniciado como ativo.")
+else:
+    token = Token("undefined")
+    print("[TOKEN STATUS]: Token iniciado como inativo.")
 
 transfer_list = {}
 
