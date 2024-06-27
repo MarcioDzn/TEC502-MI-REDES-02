@@ -3,7 +3,7 @@ import { signinSchema } from "../../schemas/signinSchema";
 import { useForm } from "react-hook-form";
 import { useMutation } from '@tanstack/react-query';
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginContainer, LoginContent, LoginForm } from "./LoginStyled"
+import { InputButton, LoginContainer, LoginContent, LoginForm, TypeContainer } from "./LoginStyled"
 import { Link } from "react-router-dom"
 import { useNavigate } from "react-router-dom";
 import { useState } from "react"
@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 
 export function Login() {
     const [loginError, setLoginError] = useState(null); // Estado para armazenar o erro do CPF
+    const [userType, setUserType] = useState(0); // 0 - fisica / 1 - jurídica
 
     const mutation = useMutation({ mutationFn: auth })
 
@@ -58,6 +59,10 @@ export function Login() {
         <LoginContainer>
             <LoginContent>
                 <h1>Entre na sua conta</h1>
+                <TypeContainer>
+                    <InputButton type={"button"} onClick={() => {setUserType(0)}} highlighted={(userType == 0).toString()} name="userType" id="pessoaFisica">Pessoa Física</InputButton>
+                    <InputButton type={"button"} onClick={() => {setUserType(1)}} highlighted={(userType == 1).toString()} name="userType" id="pessoaJuridica">Pessoa Jurídica</InputButton>
+                </TypeContainer>
                 <LoginForm onSubmit={handleSubmitSignin(inHandleSubmit)}>
                     <input type="text" placeholder="CPF" name="cpf" {...registerSignin("cpf")} onChange={handleCpfChange}/>
                     {errorsSignin.cpf && <ErrorSpan>{errorsSignin.cpf.message}</ErrorSpan>}
