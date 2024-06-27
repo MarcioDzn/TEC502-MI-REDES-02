@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { signupSchema } from "../../schemas/signupSchema";
 import { ErrorSpan } from "../../components/Navbar/NavbarStyled";
 import { useMutation } from '@tanstack/react-query';
-import { registerUser } from "../../services/userService";
+import { registerAccount } from "../../services/userService";
 import { useNavigate } from "react-router-dom";
 
 export function Register() {
@@ -14,18 +14,27 @@ export function Register() {
     const [userType, setUserType] = useState(0); // 0 - fisica / 1 - jurídica
     const [accountType, setAccountType] = useState(0); // -1 - nada / 0 - normal / 1 - conjunta
 
-    const mutation = useMutation({ mutationFn: registerUser })
+    const mutation = useMutation({ mutationFn: registerAccount })
     const {
         register: registerSignup,
         handleSubmit: handleSubmitSignup,
         formState: { errors: errorsSignup }
-    } = useForm({ resolver: zodResolver(signupSchema(userType === 1)) });
+    } = useForm({ resolver: zodResolver(signupSchema(userType === 1, accountType === 1)) });
     const navigate = useNavigate()
 
     async function upHandleSubmit(data) {
-        console.log("Teste")
         try {
-            const response = await mutation.mutateAsync(data)
+            const body = {
+                user_type: userType == 0 ? "fisica" : "juridica",
+                account_type: userType == 1 ? "normal" : accountType == 0 ? "normal" : "conjunta",
+                primary_name: data.name,
+                primary_cpf: data.cpf ? data.cpf : null,
+                secondary_name: data.secondaryName ? data.secondaryName : null,
+                secondary_cpf: data.secondaryCpf ? data.secondaryCpf : null,
+                cnpj: data.cnpj ? data.cnpj : null,
+                password: data.password
+            };
+            const response = await mutation.mutateAsync(body)
 
             if (response.status === 201) {
                 navigate("/")
@@ -82,7 +91,7 @@ export function Register() {
                         <InputButton type={"button"} onClick={() => {setAccountType(1)}} highlighted={(accountType == 1 && userType == 0).toString()} name="userType" id="contaConjunta" disabled={userType == 1}>Conta Conjunta</InputButton>
                     </TypeContainer>
 
-                    <input type="text" placeholder="Nome" {...registerSignup("name")} />
+                    <input type="text" placeholder={accountType == 1 ? "Primeiro Nome" : "Nome"} {...registerSignup("name")} />
                     {errorsSignup.name && <ErrorSpan>{errorsSignup.name.message}</ErrorSpan>}
 
                     {
@@ -90,11 +99,37 @@ export function Register() {
                         <>
                             <input
                                 type="text"
-                                placeholder="CPF"
+                                placeholder={accountType == 1 ? "Primeiro CPF" : "CPF"}
                                 {...registerSignup("cpf")}
                                 onChange={handleCpfChange} 
                             />
                             {errorsSignup.cpf && <ErrorSpan>{errorsSignup.cpf.message}</ErrorSpan>}
+                            {cpfError && <ErrorSpan>{cpfError}</ErrorSpan>} 
+                        </>
+                    }
+
+                    {
+                        accountType == 1 &&
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Segundo Nome"
+                                {...registerSignup("secondaryName")}
+                            />
+                            {errorsSignup.secondaryName && <ErrorSpan>{errorsSignup.secondaryName.message}</ErrorSpan>}
+                        </>
+                    }
+
+                    {
+                        accountType == 1 &&
+                        <>
+                            <input
+                                type="text"
+                                placeholder="Segundo CPF"
+                                {...registerSignup("secondaryCpf")}
+                                onChange={handleCpfChange} 
+                            />
+                            {errorsSignup.secondaryCpf && <ErrorSpan>{errorsSignup.secondaryCpf.message}</ErrorSpan>}
                             {cpfError && <ErrorSpan>{cpfError}</ErrorSpan>} 
                         </>
                     }
