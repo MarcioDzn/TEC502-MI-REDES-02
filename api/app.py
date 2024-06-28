@@ -574,7 +574,6 @@ def transfer_funds():
 
             
         except:
-            is_transferring = False
             transaction_error = True
             error_index = index 
             break
