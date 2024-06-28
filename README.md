@@ -228,7 +228,7 @@ Respostas:
 ## Situação da transação concorrente
 
 ## Interface gráfica
-### Autênticação
+### Autenticação
 #### Registro
 #### Login
 
