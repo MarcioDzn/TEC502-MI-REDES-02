@@ -73,6 +73,7 @@ export function MainPage(){
 
     async function handleTransferSubmit(data) {
         try {
+            data.account_cpf = user?.users[0].cpf
             const response = await mutation.mutateAsync(data)
         } catch (error) {
             // verifica se houve um erro de CPF e definir a mensagem de erro

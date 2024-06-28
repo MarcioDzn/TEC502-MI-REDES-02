@@ -1,9 +1,12 @@
 import axios from "axios"
 
 const baseURL = "http://localhost:8080/v1/api"
+import Cookies from "js-cookie";
 
 export async function transfer(data) {
+    const account_cpf = data.account_cpf
     delete data._id
+    delete data.account_cpf
 
     const newData = data.map(obj => {
         const { ["_id"]: _, ...rest } = obj;
@@ -13,14 +16,13 @@ export async function transfer(data) {
         };
       });
 
-
+    
     const body = {
-        account_cpf: "123.456.789-12",
+        account_cpf: account_cpf,
         account_cnpj: "",
-        bank_req_src: "localhost:8080",
+        bank_req_src: Cookies.get("agency"),
         transfers: [...newData]
     }
 
-    console.group(body)
     return await axios.patch(`${baseURL}/transfers`, body)
 }
