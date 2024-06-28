@@ -34,6 +34,8 @@ export function Login() {
                 agency: data.agency
             };
 
+            console.log(body)
+
             const response = await mutation.mutateAsync(body)
 
             if (response.status === 200) {
