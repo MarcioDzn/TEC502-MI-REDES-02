@@ -20,13 +20,21 @@ export function Login() {
         register: registerSignin,
         handleSubmit: handleSubmitSignin,
         formState: { errors: errorsSignin }
-    } = useForm({ resolver: zodResolver(signinSchema) });
+    } = useForm({ resolver: zodResolver(signinSchema(userType === 1)) });
     const navigate = useNavigate()
 
 
     async function inHandleSubmit(data) {
         try {
-            const response = await mutation.mutateAsync(data)
+            const body = {
+                cpf: data.cpf ? data.cpf : null,
+                cnpj: data.cnpj ? data.cnpj : null,
+                account_id: data.accountId,
+                password: data.password,
+                agency: data.agency
+            };
+
+            const response = await mutation.mutateAsync(body)
 
             if (response.status === 200) {
                 navigate("/")
@@ -51,8 +59,21 @@ export function Login() {
             .replace(/(-\d{2})\d+?$/, "$1");
     }
 
+    function formatCNPJ(value) {
+        const cleanedValue = value.replace(/\D/g, "").slice(0, 14); // Limita a 14 caracteres numéricos
+        
+        return cleanedValue
+            .replace(/(\d{2})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{4})(\d{2})$/, "$1/$2-$3");
+    }
+
     function handleCpfChange(event) {
         event.target.value = formatCPF(event.target.value);
+    }
+
+    function handleCnpjChange(event) {
+        event.target.value = formatCNPJ(event.target.value);
     }
 
     return (
@@ -64,8 +85,29 @@ export function Login() {
                     <InputButton type={"button"} onClick={() => {setUserType(1)}} highlighted={(userType == 1).toString()} name="userType" id="pessoaJuridica">Pessoa Jurídica</InputButton>
                 </TypeContainer>
                 <LoginForm onSubmit={handleSubmitSignin(inHandleSubmit)}>
-                    <input type="text" placeholder="CPF" name="cpf" {...registerSignin("cpf")} onChange={handleCpfChange}/>
-                    {errorsSignin.cpf && <ErrorSpan>{errorsSignin.cpf.message}</ErrorSpan>}
+                    {
+                        userType == 0 ? 
+                        <>
+                            <input key="cpf" type="text" placeholder="CPF" name="cpf" {...registerSignin("cpf")} onChange={handleCpfChange}/>
+                            {errorsSignin.cpf && <ErrorSpan>{errorsSignin.cpf.message}</ErrorSpan>}
+                        </>
+                        : 
+                        <>
+                             <input
+                                key="cnpj"
+                                type="text"
+                                placeholder="CNPJ"
+                                {...registerSignin("cnpj")} 
+                                onChange={handleCnpjChange} 
+                            />
+                            {errorsSignin.cnpj && <ErrorSpan>{errorsSignin.cnpj.message}</ErrorSpan>}
+                        </>
+
+                    }
+                    <input type="text" placeholder="Número da conta" name="accountId" {...registerSignin("accountId")}/>
+                    {errorsSignin.accountId && <ErrorSpan>{errorsSignin.accountId.message}</ErrorSpan>}
+                    <input type="text" placeholder="Agência" name="agency" {...registerSignin("agency")}/>
+                    {errorsSignin.agency && <ErrorSpan>{errorsSignin.agency.message}</ErrorSpan>}
                     <input type="password" placeholder="Senha" name="password" {...registerSignin("password")}/>
                     {errorsSignin.password && <ErrorSpan>{errorsSignin.password.message}</ErrorSpan>}
                     {loginError && <ErrorSpan>{loginError}</ErrorSpan>}
