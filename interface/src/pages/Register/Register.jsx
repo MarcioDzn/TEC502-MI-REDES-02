@@ -7,6 +7,7 @@ import { ErrorSpan } from "../../components/Navbar/NavbarStyled";
 import { useMutation } from '@tanstack/react-query';
 import { registerAccount } from "../../services/userService";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export function Register() {
     const [cpfError, setCpfError] = useState(null);
@@ -37,8 +38,11 @@ export function Register() {
             };
             const response = await mutation.mutateAsync(body)
 
-            if (response.status === 201) {
-                navigate("/")       
+            if (response.status === 201) {    
+                navigate("/app")
+                Cookies.set("token", response.data.token, {expires: 1});
+                Cookies.set("agency", data.agency, {expires: 1});
+                window.location.reload();
             }
         } catch (error) {
             // verifica se houve um erro de CPF e definir a mensagem de erro
