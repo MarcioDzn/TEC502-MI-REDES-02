@@ -165,7 +165,62 @@ def send_token():
                 print("[ERROR]: Não foi possível enviar o token para este banco. Tentando com o próximo da lista.")
     
     
+@app.before_request
+def auth_middleware():
+    # ignora pedido OPTIONS (preflight requests)
+    if request.method == 'OPTIONS':
+        return
+    
+    if request.path not in ["/v1/api/auth/account"]:
+        return 
+    
+    authorization = request.headers.get("authorization")
 
+    if not authorization:
+        return jsonify({"message": "Token invalido"}), 401
+
+    parts = authorization.split(" ")
+
+    # verificando se é Bearer código (2 partes)
+    if len(parts) != 2:
+        return "", 401
+
+    if parts[0] != "Bearer":
+        return "", 401
+    
+    token = parts[1]
+
+    try:
+        decoded_token = jwt.decode(token, "walter white", ['HS256'])
+
+        # verificar se o usuário existe
+        account_id = decoded_token['id']
+        account_login = decoded_token['login']
+
+        account = account_db.get_account_by_id(account_id)
+
+        if not account:
+            return jsonify({"message": "Id inválido"}), 401
+        
+        
+        users = [user_db.get_user_by_id(user_id) for user_id in account["users"]]
+
+        is_login_valid = False
+        for user in users:
+            if (user["cpf"] == account_login or user["cnpj"] == account_login):
+                is_login_valid = True
+
+        if (not is_login_valid):
+            return jsonify({"message": "Id inválido"}), 401
+        
+        request.account_id = account_id
+
+        # passa o id do usuário na requisição 
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token expirado"}), 401
+    
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Token inválido"}), 401
 
 
 @app.route('/v1/api/token', methods=["GET"])
@@ -236,11 +291,12 @@ def register_account():
     # uma conta conjunta deve ter dois usuários com campos válidos
     if user_type == "fisica" and account_type == "conjunta" and (not secondary_name or not secondary_cpf):
         return jsonify({"message":"Contas conjuntas devem ter dois usuários associados"}), 400
-
+    
+    
     # garante que o CNPJ informado é válido
     if (user_type == "juridica" and not cnpj):
         return jsonify({"message":"Uma pessoa jurídica deve ter um CNPJ válido."}), 400
-    
+
         
     # garante que campos indesejados não sejam adicionados
     if (user_type == "juridica"):
@@ -343,6 +399,26 @@ def auth():
     return jsonify({"token": auth_token}), 200
 
 #######################################
+
+
+######## BUSCANDO A CONTA AUTENTICADA ########
+
+@app.route('/v1/api/auth/account', methods=["GET"])
+def get_auth_account():
+    id = getattr(request, 'account_id', None)
+
+    account = account_db.get_account_by_id(id)
+
+    if (account == None):
+        return jsonify({"message": "Conta não encontrada"}), 404
+    
+    # substitui os ids dos usuários por seus atributos
+    account["users"] = [user_db.get_user_by_id(user_id) for user_id in account["users"]]
+
+    return account, 200
+
+#######################################
+
 
 @app.route('/v1/api/accounts', methods=["GET"])
 def get_all_account():
