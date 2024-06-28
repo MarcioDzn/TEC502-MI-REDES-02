@@ -19,6 +19,7 @@ export const signupSchema = (isCnpjActive, isConjuntaActive) => z.object({
             .join(" ")) : z.string().optional(),
     secondaryCpf: isConjuntaActive ? z.string().regex(cpfRegex, { message: "CPF inválido." }) : z.string().optional(), // Remove caracteres não numéricos do CPF
     cnpj: isCnpjActive ? z.string().regex(cnpjRegex, { message: "CNPJ inválido." }) : z.string().optional(),
+    agency: z.string(),
     password: z.string().min(3, {message: "A senha precisa ter no mínimo 3 caracteres"}),
     confirmPassword: z.string().min(3, {message: "A senha precisa ter no mínomo 3 caracteres"})
 }).refine((data) => data.password === data.confirmPassword, {

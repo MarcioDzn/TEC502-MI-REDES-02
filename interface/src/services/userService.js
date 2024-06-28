@@ -1,12 +1,12 @@
 import axios from "axios"
 
-const baseURL = "http://localhost:8080"
-
 export async function registerAccount(data) {
+    const agency = data.agency
+    delete data.agency
     delete data.confirmPasword
     const body = {
         ...data
     }
 
-    return await axios.post(`${baseURL}/v1/api/accounts`, body)
+    return await axios.post(`http://${agency}/v1/api/accounts`, body)
 }

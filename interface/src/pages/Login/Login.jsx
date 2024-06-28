@@ -108,11 +108,14 @@ export function Login() {
                     }
                     <input type="text" placeholder="Número da conta" name="accountId" {...registerSignin("accountId")}/>
                     {errorsSignin.accountId && <ErrorSpan>{errorsSignin.accountId.message}</ErrorSpan>}
+
                     <input type="text" placeholder="Agência" name="agency" {...registerSignin("agency")}/>
                     {errorsSignin.agency && <ErrorSpan>{errorsSignin.agency.message}</ErrorSpan>}
+
                     <input type="password" placeholder="Senha" name="password" {...registerSignin("password")}/>
                     {errorsSignin.password && <ErrorSpan>{errorsSignin.password.message}</ErrorSpan>}
                     {loginError && <ErrorSpan>{loginError}</ErrorSpan>}
+                    
                     <button type="submit">Entrar</button>
                 </LoginForm>
                 <span>Não possui uma conta? <Link to="/register">Registre-se</Link></span>

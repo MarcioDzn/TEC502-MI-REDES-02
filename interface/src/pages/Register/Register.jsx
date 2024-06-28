@@ -32,7 +32,8 @@ export function Register() {
                 secondary_name: data.secondaryName ? data.secondaryName : null,
                 secondary_cpf: data.secondaryCpf ? data.secondaryCpf : null,
                 cnpj: data.cnpj ? data.cnpj : null,
-                password: data.password
+                password: data.password,
+                agency: data.agency
             };
             const response = await mutation.mutateAsync(body)
 
@@ -149,6 +150,8 @@ export function Register() {
 
                     }
                     
+                    <input type="text" placeholder="Agência" name="agency" {...registerSignup("agency")}/>
+                    {errorsSignup.agency && <ErrorSpan>{errorsSignup.agency.message}</ErrorSpan>}
  
                     <input type="password" placeholder="Senha" name="password" {...registerSignup("password")} />
                     {errorsSignup.password && <ErrorSpan>{errorsSignup.password.message}</ErrorSpan>}
