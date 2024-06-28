@@ -5,26 +5,27 @@ import { UserContext } from "../../context/UserContext";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom";
+import { getUserLogged } from "../../services/userService";
 
 export function Navbar() {
     const location = useLocation();
     const {user, setUser} = useContext(UserContext);
 
-    // async function findUserLogged(token) {
-    //     try {
-    //         const response = await getUserLogged(token);
-    //         console.log("a")
-    //         setUser(response.data)
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+    async function findUserLogged(token) {
+        try {
+            const response = await getUserLogged(token);
+
+            setUser(response.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         const token = Cookies.get("token")
         console.log(token)
         if (token) {
-            // findUserLogged(token);
+            findUserLogged(token);
         }
     }, [])
 
@@ -50,7 +51,10 @@ export function Navbar() {
                     e.preventDefault()
                 }}>
                     {
-                        user ? <UserInfo><span onClick={signout}>{user.name}</span><i className="bi bi-box-arrow-right" onClick={signout}></i></UserInfo> :
+                        user ? <UserInfo><span onClick={signout}>{user?.users.length == 1 ? 
+                                `Olá, ${user?.users[0].name}` : 
+                                `Olá, ${user?.users[0].name} e ${user?.users[1].name}`}</span>
+                            <i className="bi bi-box-arrow-right" onClick={signout}></i></UserInfo> :
                         location.pathname === "/register" ? 
                         <Link to="/login">
                             <Button type="submit">Login</Button>

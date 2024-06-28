@@ -39,8 +39,9 @@ export function Login() {
             const response = await mutation.mutateAsync(body)
 
             if (response.status === 200) {
-                navigate("/")
+                navigate("/app")
                 Cookies.set("token", response.data.token, {expires: 1});
+                Cookies.set("agency", data.agency, {expires: 1});
                 window.location.reload();
             }
         } catch (error) {

@@ -38,7 +38,7 @@ export function Register() {
             const response = await mutation.mutateAsync(body)
 
             if (response.status === 201) {
-                navigate("/")
+                navigate("/")       
             }
         } catch (error) {
             // verifica se houve um erro de CPF e definir a mensagem de erro
