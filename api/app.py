@@ -360,7 +360,11 @@ def register_account():
 
     account_db.create_account(new_account)
 
-    return jsonify({"message": "Conta criada com sucesso"}), 201
+    auth_token = generate_jwt_token(new_account._id, 
+                                primary_cpf if primary_cpf else cnpj, 
+                                password)
+
+    return jsonify({"message": "Conta criada com sucesso", "token": auth_token}), 201
 
 
 ######## AUTENTICAÇÃO DA CONTA ########
