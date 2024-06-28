@@ -3,8 +3,9 @@ import { AddTransactionModal } from "../../components/AddTransactionModal/AddTra
 import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
 import LoadingCircle, { AccountCardInfo, AddTransaction, BankAccountsContainer, BankInfoWrapper, LoadingContainer, MainPageContainer, OtherAccountsH2, TransactionHistoryContainer, TransactionPendingContainer, TransactionPendingContainerEmpty, TransactionPendingContainerInfo, TransactionPendingContent } from "./MainPageStyled";
 import { accounts } from "../../Datas";
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useMutation, useQuery, useIsMutating } from '@tanstack/react-query';
+import { UserContext } from "../../context/UserContext";
 import { transfer } from "../../services/transferService";
 import { getAllAccounts, getUserAccount } from "../../services/accountService";
 import { Store } from 'react-notifications-component';
@@ -13,6 +14,7 @@ import 'react-notifications-component/dist/theme.css';
 export function MainPage(){
     const [pendingTransfers, setPendingTransfers] = useState([])
     const [addingTransfers, setAddingTransfers] = useState(false)
+    const {user, setUser} = useContext(UserContext);
 
     const mutation = useMutation({ mutationKey: 'transfer', 
             mutationFn: 
@@ -56,12 +58,12 @@ export function MainPage(){
 
     const {data: accountsData, isFetching, isLoading, isError, refetch} = useQuery({
         queryKey: ["accounts"],
-        queryFn: () => getAllAccounts("1440741980")
+        queryFn: () => getAllAccounts(user?._id)
     })
 
     const {data: userAccount, isFetching: isFetchingUserAccount, isLoading: isLoadingUserAccount, isError: isErrorUserAccount, refetch: refetchUserAccount} = useQuery({
         queryKey: ["userAccount"],
-        queryFn: () => getUserAccount("1440741980"),
+        queryFn: () => getUserAccount(user?._id),
         enabled: false,  // A query não será executada automaticamente
     })
 
