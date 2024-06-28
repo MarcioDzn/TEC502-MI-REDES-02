@@ -470,17 +470,16 @@ def transfer_funds():
     while token.status != "active":
         pass
     
-    print("a")
     # envia as requisições de transferência
     if (not transfer_list[operation_id]):
         return jsonify({"message": "Nenhuma transação foi solicitada"}), 500
     
-    print("b")
     # garantir que só seja enviada a PRIMEIRA OPERAÇÃO da lista e quando o token estiver ATIVO
     while list(transfer_list.keys()).index(operation_id) != 0 or token.status != "active":
         pass
+    
+    is_transferring = True
 
-    print("c")
     transfer_logs = []
     for index, operation in enumerate(transfer_list[operation_id]):
         try:
@@ -568,13 +567,14 @@ def transfer_funds():
 
             if (prepare_destination.status_code != 200 or prepare_source.status_code != 200 or
                 commit_destination.status_code != 200 or commit_source.status_code != 200):
-
+                
                 transaction_error = True
                 error_index = index # até onde na lista foi transferido até dar erro (incluindo o erro)
                 break
 
             
         except:
+            is_transferring = False
             transaction_error = True
             error_index = index 
             break
@@ -641,7 +641,6 @@ def transfer_funds():
     
     with transfer_lock:
         is_transferring = False
-
 
     # espera o token ficar inativo pra remover da lista ou espera 10 segundos
     start_time = time()
