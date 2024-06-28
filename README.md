@@ -81,6 +81,8 @@ Resposta:
   <br/>
 </div>
 
+> O campo `token` refere-se ao token de autenticação
+
 #### GET /accounts
 Rota responsável por retornar as contas criadas.
 
