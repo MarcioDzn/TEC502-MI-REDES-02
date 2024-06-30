@@ -681,3 +681,9 @@ Caso um usuário deseje realizar uma ou mais transferências, o mesmo deve clica
 Ao fim da adição de informações o usuário deve clicar em `Confirmar Transferência(s)`, fechando automaticamente o modal. Após isso, para realizar de fato a(s) transferência(s), o usuário deve pressionar o botão `Realizar Transferência`.
 
 ## Conclusão
+O sistema cumpre com todos os requisitos definidos, sendo capaz de realizar transações atômicas sobre o dinheiro em contas de outro banco, envolvendo uma ou mais contas. Ademais, a comunicação entre os bancos e com os usuários finais foi feita utilizando o protocolo HTTP, através de uma API REST. Além disso, implementações contra possíveis problemas de concorrência foram desenvolvidas, como um algoritmo de passagem de token, evitando problemas indesejados.
+
+Por fim, a execução do sistema em diversas máquinas e ambientes se dá através da ferramenta *Docker*.
+
+
+
