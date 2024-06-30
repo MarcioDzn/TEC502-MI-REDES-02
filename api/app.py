@@ -563,7 +563,6 @@ def transfer_funds():
     transfer_logs = []
     for index, operation in enumerate(transfer_list[operation_id]):
         try:
-            print("[TRANSFERÊNCIA]: {}".format(operation))
             data = {
                 "transfer_id": operation.id,
                 "operation_id": operation.operation_id,
@@ -730,8 +729,6 @@ def transfer_funds():
     with transfer_list_lock:
         key = list(transfer_list.keys())[0]
         transfer_list.pop(key)
-
-    print("[LISTA DE TRANSFERÊNCIAS 2]: {}".format(transfer_list))
 
     if (transaction_error):
         return jsonify({"message": "Erro durante a transação"}), 400
