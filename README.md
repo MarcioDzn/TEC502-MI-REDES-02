@@ -607,10 +607,77 @@ Além disso, situações adversas, como a queda de um nó, não representam o fi
 ### Situação da transação concorrente
 
 ## Interface gráfica
+A fim de permitir que o usuário realize transferências, desenvolveu-se uma interface gráfica utilizando o *framework* ReactJS.
+
+A partir da interface é possível:
+- Cadastrar uma nova conta
+- Logar em um conta já existente
+- Realizar transferências bancárias entre diferentes contas
+
 ### Autenticação
+Para poder realizar transferências o usuário precisa primeiro ter uma conta, portanto, é necessário que o mesmo crie uma, podendo acessá-la posteriormente.
+
 #### Registro
+A tela de registro pode ser acessada por meio da URL `http://localhost:3000/register`.
+
+Nessa página é possível criar uma conta a partir das seguintes informações:
+- Tipo de conta (normal ou conjunta)
+- Tipo de usuário (pessoa física ou pessoa jurídica)
+- Nome
+- CPF (pessoa física)
+- CNPJ (pessoa jurídica)
+- Agência (ip da máquina executando o servidor do banco)
+- Senha
+
+<div align="center">
+  <img src="media/register-page.png" alt="Página de registro." height="300px" width="auto" />
+  <br/> <em>Figura 19. Página de registro.</em> <br/>
+  <br/>
+</div>
+
+> Caso o usuário deseje criar uma conta conjunta, dois nomes e dois CPFs deverão ser informados.
+
 #### Login
+Já a página de login, acessada a partir da URL `http://localhost:3000/login` permite a um usuário entrar em uma conta que já foi cadastrada, a partir dos seguintes dados:
+
+- CPF (pessoa física)
+- CNPJ (pessoa jurídica)
+- Número da conta
+- Agência
+- Senha
+
+<div align="center">
+  <img src="media/login-page.png" alt="Página de login." height="300px" width="auto" />
+  <br/> <em>Figura 20. Página de login.</em> <br/>
+  <br/>
+</div>
+
+### Página inicial
+A página inicial pode ser acessada a partir da rota `http://localhost:3000/app`.
+
+Tal página mostra informações do usuário logado no momento, bem como suas contas em outros bancos. 
+
+Ademais, no canto inferior direito é possível visualizar as transferências pendentes. Caso não haja nenhuma, um botão é disponibilizado para que o usuário as insira. 
+
+<div align="center">
+  <img src="media/main-page.png" alt="Página principal." height="300px" width="auto" />
+  <br/> <em>Figura 21. Página principal.</em> <br/>
+  <br/>
+</div>
 
 ### Transferência
+Caso um usuário deseje realizar uma ou mais transferências, o mesmo deve clicar no botão de `Adicionar Transferência`. Um modal será exibido, permitindo que sejam inseridas as seguintes informações:
+- Conta e agência de origem
+- Conta e agência de destino
+- Valor a ser transferido
+
+> A conta e agência de origem são limitadas às pertencentes ao usuário.
+<div align="center">
+  <img src="media/add-transfer.png" alt="Modal de adicionar transferência." height="300px" width="auto" />
+  <br/> <em>Figura 22. Modal de adicionar transferência.</em> <br/>
+  <br/>
+</div>
+
+Ao fim da adição de informações o usuário deve clicar em `Confirmar Transferência(s)`, fechando automaticamente o modal. Após isso, para realizar de fato a(s) transferência(s), o usuário deve pressionar o botão `Realizar Transferência`.
 
 ## Conclusão

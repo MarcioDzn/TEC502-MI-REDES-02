@@ -135,20 +135,7 @@ export function MainPage(){
                         </BankAccountsContainer>
                     </div>
 
-                    <div>
-                        <h2>Histórico de transações</h2>
-                        <TransactionHistoryContainer>
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                            <TransactionCard />
-                        </TransactionHistoryContainer>
-                    </div>
+
 
                     <TransactionPendingContent>
                         <TransactionPendingContainerInfo>
