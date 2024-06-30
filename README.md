@@ -2,6 +2,32 @@
 <h1>TEC502 - Sistema de bancos distribuído</h1>
 </div>
 
+## Tópicos
+- [Como executar?](#como-executar)
+- [Organização do Projeto](#organização-do-projeto)
+- [Banco](#banco)
+  - [API REST](#api-rest)
+    - [Gerenciamento de contas](#gerenciamento-de-contas)
+    - [Token](#token)
+    - [Transferências](#transferências)
+    - [Autenticação](#autenticação)
+  - [Comunicação entre os servidores](#comunicação-entre-os-servidores)
+    - [Transferências](#transferências-1)
+      - [Transação atômica](#transação-atômica)
+    - [Sincronização](#sincronização)
+  - [Concorrência distribuída](#concorrência-distribuída)
+    - [Funcionamento teórico](#funcionamento-teórico)
+      - [Confiabilidade](#confiabilidade)
+    - [Funcionamento prático](#funcionamento-prático)
+  - [Situação da transação concorrente](#situação-da-transação-concorrente)
+- [Interface gráfica](#interface-gráfica)
+  - [Autenticação](#autenticação)
+    - [Registro](#registro)
+    - [Login](#login)
+  - [Transferência](#transferência)
+- [Conclusão](#conclusão)
+
+
 ## Como executar?
 1. Clone o repositório:
 ```bash
@@ -96,7 +122,7 @@ A API conta com diferentes rotas para variadas funcionalidades, tais como gerenc
 #### Gerenciamento de contas
 Uma importante funcionalidade da API é a criação e a busca de contas. Para tanto, as seguintes rotas são utilizadas:
 
-#### POST /accounts
+##### POST /accounts
 Rota responsável pela criação de uma conta bancária.
 
 Corpo da requisição:
@@ -115,7 +141,7 @@ Resposta:
 
 > O campo `token` refere-se ao token de autenticação
 
-#### GET /accounts
+##### GET /accounts
 Rota responsável por retornar as contas criadas.
 
 Resposta:
@@ -125,14 +151,14 @@ Resposta:
   <br/>
 </div>
 
-##### Parâmetros
+###### Parâmetros
 É possível utilizar dois parâmetros para realizar a filtragem dos dados retornados, sendo eles:
 - **cpf**: Permite que apenas as contas com um determinado CPF sejam retornadas
     - Exemplo: `/v1/api/accounts?cnpj=11.111.111/1111-11`
 - **cnpj**: Permite que apenas as contas com um determinado CNPJ sejam retornadas
     - Exemplo: `/v1/api/accounts?cpf=111.111.111-11`
 
-#### GET /accounts/:id
+##### GET /accounts/:id
 Rota responsável por retornar uma conta com um id em específico.
 
 Resposta:
@@ -142,7 +168,7 @@ Resposta:
   <br/>
 </div>
 
-#### GET /accounts/all/:id
+##### GET /accounts/all/:id
 Rota responsável por retornar TODAS as contas de um usuário (de todos os bancos/APIs) com um determinado CPF ou CNPJ.
 
 Resposta:
@@ -154,10 +180,10 @@ Resposta:
 
 > Como podem ser feitas várias outras requisições dentro da requisição principal, o tempo de resposta pode ser alto.
 
-### Token
+#### Token
 Para que o sistema funcione corretamente é necessário que um token especial circule entre as máquinas. Dessa forma, as rotas referentes a essa funcionalidade são:
 
-#### GET /token
+##### GET /token
 Rota responsável por retornar o status do token de uma determinada máquina. Esse endpoint é utilizado entre bancos, não havendo requisição direta do usuário final.
 
 Respostas:
@@ -176,7 +202,7 @@ STATUS: 200
     }
 ```
 
-#### POST /token
+##### POST /token
 Rota responsável por passar o token de uma máquina a outra na rede. Também garante que tokens "inválidos" sejam descartados.
 
 Corpo da requisição:
@@ -204,10 +230,10 @@ STATUS: 200
 
 ```
 
-### Transferências
+#### Transferências
 A transferência de saldo entre diferentes contas é parte fundamental de um sistema bancário. Nesse sentido, o sistema contém rotas responsáveis por garantir a execução e a confiabilidade dessa operação.
 
-#### PATCH /transfers
+##### PATCH /transfers
 Responsável pela transferência atômica entre dois bancos, podendo realizar uma ou mais transações por vez.
 
 Corpo da requisição:
@@ -244,7 +270,7 @@ Respostas:
   <br/>
 </div>
 
-#### PATCH /prepare
+##### PATCH /prepare
 Rota responsável pela preparação das contas de origem e de destino durante uma transferência.
 
 Corpo da requisição:
@@ -303,7 +329,7 @@ STATUS: 200
 
 
 
-#### PATCH /commit
+##### PATCH /commit
 Rota responsável pela transferência de saldo entre as contas de origem e de destin durante uma transferência.
 
 Corpo da requisição:
@@ -338,7 +364,7 @@ STATUS: 200
     } 
 ```
 
-#### PATCH /rollback FAZER FAZER FAZER
+##### PATCH /rollback FAZER FAZER FAZER
 Rota responsável pela transferência de saldo entre as contas de origem e de destin durante uma transferência.
 
 Corpo da requisição:
@@ -375,7 +401,7 @@ STATUS: 200
     } 
 ```
 
-#### PATCH /receipts
+##### PATCH /receipts
 Rota responsável por receber a quantidade passada durante uma transferência.
 
 Corpo da requisição:
@@ -414,10 +440,10 @@ STATUS: 200
     } 
 ```
 
-### Autenticação
+#### Autenticação
 Para garantir a segurança do sistema, apenas usuários logados podem ter acesso a sua própria conta, dessa forma utilizou-se uma rota de autenticação.
 
-#### POST /auth
+##### POST /auth
 Rota responsável por autenticar contas a partir de seu cpf ou cnpj, id da conta e senha. Retorna um token de autenticação criado com a biblioteca jwt (JSON Web Tokens).
 
 Corpo da requisição:
@@ -442,7 +468,7 @@ Respostas:
   <br/>
 </div>
 
-#### GET /auth/account
+##### GET /auth/account
 Rota responsável por retornar os dados da conta autenticada a partir de seu token de autenticação. 
 
 O token deve ser passado através do campo Authorization, no header com a seguinte estrutura: `Bearer <token>`
@@ -455,39 +481,39 @@ Respost:
 </div>
 
 
-## Comunicação entre os servidores
+### Comunicação entre os servidores
 A comunicação entre os servidores se dá através de requisições HTTP, seja para realizar buscas ou transferências.
 
-## Transferências
+#### Transferências
 Transferências bancárias são parte fundamental para o funcionamento do projeto em questão. Nesse sentido, é possível realizar transferências entre diferentes contas, sejam elas do mesmo banco, ou de bancos diferentes.
 
 Ademais, o sistema permite ao usuário realizar tanto uma transferência unitária, quanto um conjunto de transferências por vez, que será chamado neste documento de operação. Para exemplificar, em uma mesma transação, um usuário com contas nos bancos A, B e C pode realizar transferências desses bancos para uma conta qualquer no banco D, de uma vez só.
 
-### Transação atômica
+##### Transação atômica
 Devido ao caráter crítico das transferências em um sistema bancário, é de suma importância que quaisquer erros que venham a ocorrer durante esse processo sejam tratados adequadamente. Caso um problema ocorra, dados podem ficar inconsistentes, resultando em perdas ou ganhos monetários injustos.
 
 Para garantir a confiabilidade dessa operação, utilizou-se o conceito de  **transação atômica**, a qual é uma operação que deve ser executada na íntegra, caso se tenha sucesso, ou seja interrompida por completo caso algum erro ocorra. 
 
 O protocolo escolhido para implementar a transação atômica nesse sistema foi baseado no 2PC, ou *Two-Phase Commit Protocol*, um algoritmo distribuído entre processos interconectados, com algumas adaptações. Dessa forma, o protocolo empregado para a implementação de transações atômicas conta com três fases distintas: *prepare*, *commit* e *rollback*.
 
-#### Prepare
+###### Prepare
 A fase de *prepare* está relacionada a preparação dos bancos para que ocorra a transação.
 
 Inicialmente verifica-se se é possível conectar-se ao banco onde se encontra a conta destinatária, e em caso positivo, examina-se se ela existe. 
 
 Em seguida, verifica-se se é possível estabelecer uma conexão com o banco que contém a conta de origem da transação e se ela existe. Se essa conta estiver disponível, verifica-se se ela contém saldo suficiente para realizar a transação. Se o saldo disponível for satisfatório, ele é reservado para realizar a transferência.
 
-#### Commit
+###### Commit
 A fase de *commit* ocorre após a de praparação, e representa a transferência em si dos valores alocados durante a fase anterior.
 
 Durante essa etapa, o saldo necessário é de fato removido da conta de origem e depositado na conta de destino.
 
-#### Rollback
+###### Rollback
 A fase de *rollback* é responsável por refazer as transferências em caso de erro nas fases anteriores. Como a transação deve ser atômica, se houver algum erro, tudo que já foi realizado deve ser desfeito, a fim de garantir que não haja nenhuma inconsistência.
 
 Dessa forma, suponha que uma operação com 3 transações esteja ocorrendo, e as duas primeiras tenham sido executadas com sucesso. Caso a terceira transação falhe, as duas transferências anteriores, mesmo que tenham sido realizadas com sucesso, são desfeitas, retirando dinheiro de quem recebeu, e devolvendo a quem "perdeu".
 
-### Sincronização 
+#### Sincronização 
 Para garantir que duas operações que foram solicitadas ao mesmo tempo sejam executadas de maneira sincronizada e ordenada, fez-se necessário utilizar uma fila com o princípio FIFO, ou seja, o primeiro que entra é o primeiro que sai.
 
 Dessa forma, sempre que uma nova operação, ou grupo de transferências, é requisitada, ela é armazenada em um dicionário de operações, que simula uma fila. Apenas a primeira operação dessa fila é executada, e quando é finalizada, seja com sucesso ou não, é removida do dicionário. A segunda operação então se torna a primeira e é executada assim como a anterior. O processo se repete até que todas as operações tenham sido finalizadas.
@@ -501,12 +527,12 @@ Dessa forma, sempre que uma nova operação, ou grupo de transferências, é req
 Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário adicionar *locks*. Dessa forma apenas um dos processos pode manipular o dicionário de operações por vez, impedindo que possíveis problemas de concorrência e inconsistência de dados ocorram.
 
 
-## Concorrência distribuída 
+### Concorrência distribuída 
 A fim de evitar problemas relacionados à concorrência no sistema, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "token" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode realizar uma operação por vez, evitando comportamentos inesperados.
 
 O token é representado por um objeto com dois atributos, um status, que indica se está ativo ou não na máquina e um id, um número inteiro utilizado em casos em que o token se perde. 
 
-### Funcionamento teórico
+#### Funcionamento teórico
 Quando o sistema inicia, apenas uma máquina deve possuir o token, tendo o status de seu objeto definido como "active", enquanto os demais nós apresentam status "undefined". Além disso, todas as máquinas setam o um id inicial para seu token, sendo ele `id = 0`.
 
 <div align="center">
@@ -529,10 +555,10 @@ Também existe a possibilidade de que mesmo disponível, um banco não possa rec
 
 Quando uma máquina toma posse de um token ela é livre para realizar suas tarefas, no caso transferências bancárias. Entretanto, outras ações, como criação e busca de contas, autenticação, etc. não dependem da presença do token, podendo ser realizadas livremente.
 
-### Confiabilidade
+##### Confiabilidade
 Para que tudo funcione da maneira esperada, fez-se necessário garantir que mesmo em situações adversas, como a queda da conexão de um ou mais nós, o sistema continue ativo. Dessa forma, duas situações em especial podem ocorrer, sendo elas a queda de um nó que não possui o token e a queda de um nó que possui o token. 
 
-#### Máquina sem o token caiu
+###### Máquina sem o token caiu
 Nessa situação, quando um nó tentar se comunicar com a máquina que caiu, não haverá conexão, não sendo possível passar o token. A máquina que quer repassar o token então busca na lista de bancos o banco seguinte ao desconectado, e tenta conectar-se a ele. 
 
 Em suma, o nó que quer repassar o token buscará sempre um nó disponível para transmiti-lo, pulando aqueles que não se encontram online.
@@ -545,7 +571,7 @@ Ademais, os servidores que permaneceram conectados **continuarão funcionando e 
   <br/>
 </div>
 
-#### Máquina com o token caiu
+###### Máquina com o token caiu
 Caso uma máquina que esteja em posse do token perca conexão com a rede, os demais nós não poderão realizar nenhuma transferência, pois o token deixou de circular entre os participantes conectados.
 
 Nessa situação, um novo token deve ser gerado, a fim de que o sistema possa voltar a funcionar. Para que isso ocorra, fez-se necessário implementar um mecanismo de recuperação, que identifica quando o token deixou de circular e gera um novo.
@@ -573,12 +599,12 @@ Em resumo, quando uma máquina com um token cai, **nenhuma outra máquina pode r
   <br/>
 </div>
 
-### Funcionamento prático
+#### Funcionamento prático
 A execução prática do algoritmo de passagem de token supracitado funciona como o esperado, permitindo que apenas os nós com o token realizem operações críticas (transferências). 
 
 Além disso, situações adversas, como a queda de um nó, não representam o fim do sistema, sendo tratadas adequadamente. Assim, um novo token é gerado quando o atual se perde e em nenhum momento dois tokens circulam na rede ao mesmo tempo.
 
-## Situação da transação concorrente
+### Situação da transação concorrente
 
 ## Interface gráfica
 ### Autenticação
@@ -586,3 +612,5 @@ Além disso, situações adversas, como a queda de um nó, não representam o fi
 #### Login
 
 ### Transferência
+
+## Conclusão
