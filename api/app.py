@@ -381,7 +381,7 @@ def auth():
     account = account_db.accounts_db.get(str(account_id))
 
     if (not account):
-        return jsonify({"message": "Credenciais inválidas a."}), 401
+        return jsonify({"message": "Credenciais inválidas."}), 401
 
     is_user_valid = False
     for user_id in account.users:
@@ -390,10 +390,10 @@ def auth():
             is_user_valid = True
 
     if (not is_user_valid):
-        return jsonify({"message": "Credenciais inválidas b."}), 401
+        return jsonify({"message": "Credenciais inválidas."}), 401
     
     if (account.password != password):
-        return jsonify({"message": "Credenciais inválidas c."}), 401
+        return jsonify({"message": "Credenciais inválidas."}), 401
     
 
     auth_token = generate_jwt_token(account._id, 
