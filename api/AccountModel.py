@@ -11,7 +11,7 @@ class AccountModel():
         self._id = "{}".format(generate_id(primary_user.name + (secondary_user.name if secondary_user != None else "")))
 
         self.password = password
-        self.balance = 100.0
+        self.balance = 5000.0
 
         # armazena os valores em trânsito
         self.blocked_received_balance = [] 
