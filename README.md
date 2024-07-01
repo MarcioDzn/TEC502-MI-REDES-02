@@ -2,6 +2,11 @@
 <h1>TEC502 - Sistema de bancos distribuído</h1>
 </div>
 
+Devido à evolução tecnológica na sociedade capitalista em que vivemos, a movimentação de dinheiro deixou de ser feita apenas de maneira física, passando a ser também digital. Entretanto, a utilização de ferramentas eletrônicas para tal fim pode acarretar problemas, que podem resultar no comprometimento dos dados dos usuários. Este trabalho apresenta um sistema que permite a realização de transações bancárias entre diferentes contas e dispositivos de maneira segura e descentralizada. 
+
+A fim de garantir o funcionamento correto do projeto, implementou-se o protocolo HTTP para a comunicação entre os servidores que o integram. Ademais, para o desenvolvimento de seus módulos, utilizou-se frameworks como o *Flask*, em *Python*, para a criação da *API REST*, e *ReactJS* para a construção da interface gráfica. Por fim, para a execução de seus componentes, utilizou-se a ferramenta *Docker*.
+
+
 
 ## Tópicos
 - [Como executar?](#como-executar)

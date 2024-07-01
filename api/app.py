@@ -57,7 +57,6 @@ generate_token = True
 is_transferring = False
 
 
-# MUDAR DEPOIS PRA FAZER TUDO AO MESMO TEMPO
 def ask_for_token():
     for ip in banks.values():
         try:
