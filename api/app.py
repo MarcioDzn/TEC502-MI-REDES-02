@@ -495,9 +495,9 @@ def get_all_account_interbanks(id):
         for search in search_by:
             try:
                 if (not search.get("cpf")):
-                    response = requests.get(f'{ip}/v1/api/accounts?cnpj={search.get("cnpj")}', timeout=10)
+                    response = requests.get(f'{ip}/v1/api/accounts?cnpj={search.get("cnpj")}', timeout=5)
                 else:
-                    response = requests.get(f'{ip}/v1/api/accounts?cpf={search.get("cpf")}', timeout=10)
+                    response = requests.get(f'{ip}/v1/api/accounts?cpf={search.get("cpf")}', timeout=5)
 
                 result = response.json()
                 for r in result:
@@ -590,7 +590,7 @@ def transfer_funds():
             data["prepare_type"] = "destination"
             prepare_destination = requests.patch(f'http://{operation.destination}/v1/api/accounts/prepare', 
                                       json=data,
-                                      timeout=4)
+                                      timeout=5)
             
             print("[PREPARAÇÃO INICIAL REALIZADA]")
             if (prepare_destination.status_code == 200): 
@@ -605,7 +605,7 @@ def transfer_funds():
             data["prepare_type"] = "source"
             prepare_source = requests.patch(f'http://{operation.source}/v1/api/accounts/prepare', 
                                       json=data,
-                                      timeout=4)
+                                      timeout=5)
 
             print("[PREPARAÇÃO FINAL REALIZADA]")
             if (prepare_source.status_code == 200): 
@@ -620,7 +620,7 @@ def transfer_funds():
             data["commit_type"] = "destination"
             commit_destination = requests.patch(f'http://{operation.destination}/v1/api/accounts/commit', 
                                       json=data,
-                                      timeout=4)
+                                      timeout=5)
             
             print("[COMMIT INICIAL REALIZADO]")
             if (commit_destination.status_code == 200): 
@@ -634,7 +634,7 @@ def transfer_funds():
             data["commit_type"] = "source"
             commit_source = requests.patch(f'http://{operation.source}/v1/api/accounts/commit', 
                                       json=data,
-                                      timeout=4)
+                                      timeout=5)
 
             print("[COMMIT FINAL REALIZADO]")
             if (commit_source.status_code == 200): 
@@ -675,7 +675,7 @@ def transfer_funds():
 
                 response_destination = requests.patch(f'http://{transfer.destination}/v1/api/accounts/rollbacks',
                                                       json=data_destination,
-                                                      timeout=4)
+                                                      timeout=5)
 
                 data_source = {
                     "transfer_id": transfer.id,
@@ -687,7 +687,7 @@ def transfer_funds():
 
                 response_source = requests.patch(f'http://{transfer.source}/v1/api/accounts/rollbacks',
                                                  json=data_source,
-                                                 timeout=4)
+                                                 timeout=5)
 
             if log["destination_commit"] and log["source_commit"]:
                 data_destination = {
@@ -720,9 +720,9 @@ def transfer_funds():
     with transfer_lock:
         is_transferring = False
 
-    # espera o token ficar inativo pra remover da lista ou espera 10 segundos
+    # espera o token ficar inativo pra remover da lista ou espera 2 segundos
     start_time = time()
-    while token.status == "active" and (time() - start_time) < 10:
+    while token.status == "active" and (time() - start_time) < 2:
         pass
 
     # remove a operação da lista quando termina (com erro ou não)
