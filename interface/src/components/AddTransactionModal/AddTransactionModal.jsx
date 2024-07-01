@@ -1,7 +1,10 @@
-import { AddTransactionModalContainer, Background, BankAccountsContainer, BankInfos, CloseModal, TransactionForm, TransactionInfos, TransactionList, TransactionPendingContainer, TransactionPendingContainerEmpty } from "./AddTransactionModalStyled";
+import { AddTransactionModalContainer, Background, BankAccountsContainer, BankInfos, CloseModal, ErrorSpan, TransactionForm, TransactionInfos, TransactionList, TransactionPendingContainer, TransactionPendingContainerEmpty } from "./AddTransactionModalStyled";
 import { TransactionCard } from "../../components/TransactionCard/TransactionCard";
 import { AccountCard } from "../../components/AccountCard/AccountCard";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react"
+import { addTransactionSchema } from "../../schemas/addTransactionSchema";
 
 export function AddTransactionModal({accounts, transfers, addPendingTransfers, addingTransfers}) {
     const [sourceAgency, setSourceAgency] = useState(null)
@@ -13,7 +16,18 @@ export function AddTransactionModal({accounts, transfers, addPendingTransfers, a
         setSourceAccount(account)
     }
 
-    function handlePendingTransfers(transfer) {
+    function handlePendingTransfers(data) {
+        console.log("b")
+
+        const transfer = {
+                "_id": Math.random() * 3728738127,
+                "source": data.sourceAgency,
+                "destination": data.destAgency,
+                "account_source_id": data.sourceAccount,
+                "account_dest_id": data.destAccount,
+                "amount": parseFloat(data.amount)
+            }
+
         const pendingTransfersCopy = Array.from(pendingTransfers)
         pendingTransfersCopy.push(transfer)
         setPendingTransfers(pendingTransfersCopy)
@@ -24,12 +38,31 @@ export function AddTransactionModal({accounts, transfers, addPendingTransfers, a
         setPendingTransfers(pendingTransfersCopy)
     }
 
+    const {
+        register: registerTransaction,
+        handleSubmit: handleSubmitTransaction,
+        formState: { errors: errorsTransaction },
+        setValue
+    } = useForm({ resolver: zodResolver(addTransactionSchema()) });
 
     useEffect(() => {
         if (transfers) {
             setPendingTransfers(transfers)
         }
     }, []);
+
+    useEffect(() => {
+        setValue("sourceAgency", sourceAgency);
+        setValue("sourceAccount", sourceAccount);
+      }, [sourceAgency, sourceAccount, setValue]);
+
+
+    const handleAmountChange = (event) => {
+        const value = parseFloat(event.target.value);
+        if (value < 0) {
+            event.target.value = 0.01;
+        }
+    };
 
     return (
         <>
@@ -49,32 +82,34 @@ export function AddTransactionModal({accounts, transfers, addPendingTransfers, a
 
                 <TransactionInfos>
                     <h1>Adicionar transferência</h1>
-                    <TransactionForm onSubmit={(event) => {
-                        event.preventDefault()
-                        const srcAgency = document.querySelector("#src-agency").value
-                        const destAgency = document.querySelector("#dest-agency").value
-                        const srcAccount = document.querySelector("#src-account").value
-                        const destAccount = document.querySelector("#dest-account").value
-                        const amount = document.querySelector("#amount").value
+                    <TransactionForm>
+                        <div>
+                            <input type="text" id={"src-agency"} placeholder="Agência de origem" disabled={true} value={sourceAgency == null ? "" : sourceAgency} {...registerTransaction("sourceAgency")}/>
+                            {errorsTransaction.sourceAgency && <ErrorSpan error_info={errorsTransaction.sourceAgency.message}>Erro</ErrorSpan>}
+                        </div>
                         
-                        const data = {
-                                "_id": Math.random() * 3728738127,
-                                "source": srcAgency,
-                                "destination": destAgency,
-                                "account_source_id": srcAccount,
-                                "account_dest_id": destAccount,
-                                "amount": parseFloat(amount)
-                            }
+                        <div>
+                            <input type="text" id={"src-account"} placeholder="Conta de origem" disabled={true} value={sourceAccount == null ? "" : sourceAccount} {...registerTransaction("sourceAccount")}/>
+                            {errorsTransaction.sourceAccount && <ErrorSpan error_info={errorsTransaction.sourceAccount.message}>Erro</ErrorSpan>}
+                        </div>
+                        
+                        <div>
+                            <input type="text" id={"dest-agency"} placeholder="Agência de destino" {...registerTransaction("destAgency")}/>
+                            {errorsTransaction.destAgency && <ErrorSpan error_info={errorsTransaction.destAgency.message}>Erro</ErrorSpan>}
+                        </div>
+                        
+                        <div>
+                            <input type="text" id={"dest-account"} placeholder="Conta de destino" {...registerTransaction("destAccount")}/>
+                            {errorsTransaction.destAccount && <ErrorSpan error_info={errorsTransaction.destAccount.message}>Erro</ErrorSpan>}
+                        </div>
+                        
+                        <div>
+                            <input type="number" id={"amount"} placeholder="Valor" {...registerTransaction("amount")} onChange={handleAmountChange}/>
+                            {errorsTransaction.amount && <ErrorSpan error_info={errorsTransaction.amount.message}>Erro</ErrorSpan>}
+                        </div>
+                        
 
-                        handlePendingTransfers(data)
-                        
-                    }}>
-                        <input type="text" id={"src-agency"} placeholder="Agência de origem" disabled={true} value={sourceAgency == null ? "" : sourceAgency}/>
-                        <input type="text" id={"src-account"} placeholder="Conta de origem" disabled={true} value={sourceAccount == null ? "" : sourceAccount}/>
-                        <input type="text" id={"dest-agency"} placeholder="Agência de destino" />
-                        <input type="text" id={"dest-account"} placeholder="Conta de destino" />
-                        <input type="number" id={"amount"} placeholder="Valor" />
-                        <button type="submit">Adicionar à lista</button>
+                        <button onClick={handleSubmitTransaction(handlePendingTransfers)}>Adicionar à lista</button>
                     </TransactionForm>
                 </TransactionInfos>
 

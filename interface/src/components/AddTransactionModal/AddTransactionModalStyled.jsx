@@ -73,8 +73,13 @@ export const TransactionForm = styled.form`
     flex-direction: column;
     align-items: center;
     gap: 15px;
+
+    div {
+        position: relative;
+        width: 100%;
+    }
     
-    input {
+    div input {
         border: 1px solid #ebebeb;
         border-radius: 5px;
         outline: 3px solid white;
@@ -88,6 +93,10 @@ export const TransactionForm = styled.form`
 
         &:focus {
             outline: 3px solid lightgrey;
+        }
+
+        &:invalid {
+            border: 1px solid #c40000;
         }
     }
 
@@ -199,3 +208,33 @@ export const CloseModal = styled.div`
     top: -15px;
     cursor: pointer;
 `
+
+export const ErrorSpan = styled.span`
+    position: absolute;
+    right: 20px;
+    top: 27px;
+    color: #9e0000;
+    display: flex;
+    justify-content: center;
+    font-size: 0.8rem;
+    border-radius: 7px;
+    margin-right: auto;
+    margin-top: -10px;
+    cursor: default;
+
+    &:hover::after {
+        position: absolute;
+        background-color: white;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+        color: #9e0000;
+        padding: 5px;
+        border-radius: 5px;
+        width: max-content; /* Ajusta a largura ao conteúdo */
+        white-space: nowrap; /* Impede quebra de linha */
+        z-index: 20;
+        content: "${(props) => props.error_info}";
+        top: 100%; /* Posiciona abaixo do elemento */
+        left: 50%; /* Centraliza horizontalmente */
+        transform: translateX(-50%); /* Ajusta para que a centralização seja precisa */
+    }
+`;
