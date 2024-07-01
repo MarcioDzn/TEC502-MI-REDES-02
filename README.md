@@ -544,6 +544,8 @@ Quando o sistema inicia, apenas uma máquina deve possuir o token, tendo o statu
 
 Sempre que um nó possui um token, ele deve ser passado para outra máquina em um certo perído de tempo, definido ou indefinido, a depender da situação. Caso nenhuma operação (conjunto de transferências) esteja sendo realizada, o token é passado para outro nó após 1 segundo desde sua chegada. Caso uma operação estiver sendo realizada, aguarda-se a sua finalização para que o token possa ser transferido.
 
+> A função responsável pela passagem do token é a `send_token`, no arquivo `app.py`.
+
 A passagem de token de uma máquina a outra se dá por meio do protocolo HTTP, e é realizado na ordem dos itens do dicionário de bancos presente no nó. Quando o banco de indíce 0 está com o token ele tenta passar para o banco de índice 1 e assim por diante. 
 
 <div align="center">
@@ -579,9 +581,14 @@ Nessa situação, um novo token deve ser gerado, a fim de que o sistema possa vo
 
 Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o token. Dessa forma, sempre que um banco passa o token, o contador começa a funcionar, sendo zerado quando o token volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo *t* identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo. O tempo *t* depende da quantidade de máquinas disponíveis na rede, sendo: $$ t = (\text{número de máquinas online}) \times 3 $$.
 
-A máquina que atingiu o tempo limite gera o token e envia uma mensagem para todos os outros nós ativos da rede, informando que um novo token foi criado. A partir desse momento, o contador dos nós remanescentes é zerado, a fim de que nenhum outro token seja originado, o que poderia resultar em multiplos tokens na rede.
+> O timer é implementado na função `verify_token_active`, no arquivo `app.py`.
 
-A mensagem supracitada também contém o novo id do token criado, que é `o id antigo + 1`. Dessa forma, todos os nós *online*, incluindo o que gerou o *token*, passam a ter seu id de token atualizado.
+A máquina que atingiu o tempo limite envia uma mensagem para todos os outros nós ativos da rede, perguntando se já existe um token na rede. Caso não exista, o novo token é gerado e uma segunda mensagem é enviada a todos os nós, informando que um novo token foi criado. A partir desse momento, o contador dos nós remanescentes é zerado, a fim de que nenhum outro token seja originado, o que poderia resultar em multiplos tokens na rede.
+
+A segunda mensagem supracitada também contém o novo id do token criado, que é `o id antigo + 1`. Dessa forma, todos os nós *online*, incluindo o que gerou o *token*, passam a ter seu id de token atualizado.
+
+> A função responsável por perguntar se já existe um token na rede do token é `ask_for_token` e a por informar que o token foi criado, bem como propagar o novo id é a `change_token_id`, ambas arquivo `app.py`.
+
 
 <div align="center">
   <img src="media/token-error02.gif" alt="Máquina com o token caiu." height="450px" width="auto" />
