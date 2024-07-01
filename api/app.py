@@ -131,6 +131,8 @@ def check_token_active(check_interval_ms=1, timeout_seconds=20):
 def send_token():
     while True: 
         WAIT_TIME = 1
+        # tempo de espera até o token retornar desde que saiu
+        WAIT_TOKEN_TIME = (WAIT_TIME + len(banks)) * 3 
 
         next_bank = CURRENT_BANK + 1
 
@@ -158,7 +160,7 @@ def send_token():
                     token.set_status("undefined")
                     print("[TOKEN STATUS]: Token inativo")
 
-                    threading.Thread(target=verify_token_active, args=(1, 40)).start()
+                    threading.Thread(target=verify_token_active, args=(1, WAIT_TOKEN_TIME)).start()
 
             except:
                 next_bank = next_bank + 1
