@@ -4,7 +4,7 @@
 
 Devido à evolução tecnológica na sociedade capitalista em que vivemos, a movimentação de dinheiro deixou de ser feita apenas de maneira física, passando a ser também digital. Entretanto, a utilização de ferramentas eletrônicas para tal fim pode acarretar problemas, que podem resultar no comprometimento dos dados dos usuários. Este trabalho apresenta um sistema que permite a realização de transações bancárias entre diferentes contas e dispositivos de maneira segura e descentralizada. 
 
-A fim de garantir o funcionamento correto do projeto, implementou-se o protocolo HTTP para a comunicação entre os servidores que o integram. Ademais, para o desenvolvimento de seus módulos, utilizou-se frameworks como o *Flask*, em *Python*, para a criação da *API REST*, e *ReactJS* para a construção da interface gráfica. Por fim, para a execução de seus componentes, utilizou-se a ferramenta *Docker*.
+A fim de garantir o funcionamento correto do projeto, implementou-se o protocolo HTTP para a comunicação entre os servidores que o integram. Ademais, para o desenvolvimento de seus módulos, utilizou-se o *framework* *Flask*, em *Python*, para a criação da *API REST*. Já para a criação da interface gráfica, utilizou-se *ReactJS*, junto a *frameworks* como *Axios* e *Tanstack* para o consumo da *API REST* desenvolvida. Por fim, para a execução dos componentes do projeto, utilizou-se a ferramenta *Docker*.
 
 
 
