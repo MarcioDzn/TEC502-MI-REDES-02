@@ -2,6 +2,7 @@
 <h1>TEC502 - Sistema de bancos distribuído</h1>
 </div>
 
+
 ## Tópicos
 - [Como executar?](#como-executar)
 - [Organização do Projeto](#organização-do-projeto)
@@ -576,7 +577,7 @@ Caso uma máquina que esteja em posse do token perca conexão com a rede, os dem
 
 Nessa situação, um novo token deve ser gerado, a fim de que o sistema possa voltar a funcionar. Para que isso ocorra, fez-se necessário implementar um mecanismo de recuperação, que identifica quando o token deixou de circular e gera um novo.
 
-Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o token. Dessa forma, sempre que um banco passa o token, o contador começa a funcionar, sendo zerado quando o token volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo, no caso  **40 segundos**, identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo.
+Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o token. Dessa forma, sempre que um banco passa o token, o contador começa a funcionar, sendo zerado quando o token volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo *t* identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo. O tempo *t* depende da quantidade de máquinas disponíveis na rede, sendo: $$ t = (\text{número de máquinas online}) \times 3 $$.
 
 A máquina que atingiu o tempo limite gera o token e envia uma mensagem para todos os outros nós ativos da rede, informando que um novo token foi criado. A partir desse momento, o contador dos nós remanescentes é zerado, a fim de que nenhum outro token seja originado, o que poderia resultar em multiplos tokens na rede.
 
