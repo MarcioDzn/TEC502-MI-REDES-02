@@ -54,7 +54,6 @@ transfer_list = {}
 
 token = Token("active")
 generate_token = True
-bank_online = True
 is_transferring = False
 
 
@@ -108,23 +107,6 @@ def verify_token_active(check_interval_ms=1, timeout_seconds=20):
 
         # muda o id do token atual para todos os bancos conectados
         change_token_id()
-
-
-# toma as medidas necessárias caso o token ESTEJA ATIVO por mais tempo que o previsto
-def check_token_active(check_interval_ms=1, timeout_seconds=20):
-    start_time = time()
-
-    while (time() - start_time) < timeout_seconds:
-        if token.status != "active":
-            return
-        
-        sleep(check_interval_ms / 1000.0)  
-
-    # seta a máquina como offline
-    print("Token não consegue sair desta máquina")
-
-    global bank_online
-    bank_online = False
 
 
 # envia o token a cada n segundos
