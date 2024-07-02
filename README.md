@@ -637,7 +637,7 @@ A partir da interface é possível:
 Para poder realizar transferências o usuário precisa primeiro ter uma conta, portanto, é necessário que o mesmo crie uma, podendo acessá-la posteriormente.
 
 #### Registro
-A tela de registro pode ser acessada por meio da URL `http://localhost:3000/register`.
+A tela de registro pode ser acessada por meio da URL `http://<ip>:3000/register`, onde `ip` é o ip da máquina executando a interface.
 
 Nessa página é possível criar uma conta a partir das seguintes informações:
 - Tipo de conta (normal ou conjunta)
