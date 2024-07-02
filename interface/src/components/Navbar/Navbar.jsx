@@ -69,7 +69,7 @@ export function Navbar() {
                             </Link>
 
                             <Link to="/register">
-                                <Button type="submit" btn_type="bold">Registrar</Button>
+                                <Button type="submit" btn_type="bold">Abra a sua conta</Button>
                             </Link>
                         </>
                     }
