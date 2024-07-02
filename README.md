@@ -519,7 +519,7 @@ A fase de *rollback* é responsável por refazer as transferências em caso de e
 
 Dessa forma, suponha que uma operação com 3 transações esteja ocorrendo, e as duas primeiras tenham sido executadas com sucesso. Caso a terceira transação falhe, as duas transferências anteriores, mesmo que tenham sido realizadas com sucesso, são desfeitas, retirando dinheiro de quem recebeu, e devolvendo a quem "perdeu".
 
-#### Sincronização 
+#### Sincronização e Transação concorrente
 Para garantir que duas operações que foram solicitadas ao mesmo tempo sejam executadas de maneira sincronizada e ordenada, fez-se necessário utilizar uma fila com o princípio FIFO, ou seja, o primeiro que entra é o primeiro que sai.
 
 Dessa forma, sempre que uma nova operação, ou grupo de transferências, é requisitada, ela é armazenada em um dicionário de operações, que simula uma fila. Apenas a primeira operação dessa fila é executada, e quando é finalizada, seja com sucesso ou não, é removida do dicionário. A segunda operação então se torna a primeira e é executada assim como a anterior. O processo se repete até que todas as operações tenham sido finalizadas.
@@ -531,6 +531,8 @@ Dessa forma, sempre que uma nova operação, ou grupo de transferências, é req
 </div>
 
 Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário adicionar *locks*. Dessa forma, apenas um dos processos pode manipular o dicionário de operações por vez, impedindo que possíveis problemas de concorrência ocorram.
+
+Assim, dois ou mais usuários podem realizar transações ao mesmo tempo no mesmo banco sem que problemas de natureza concorrente se apresentem.
 
 
 ### Concorrência distribuída 
@@ -616,8 +618,6 @@ Em resumo, quando uma máquina com um *token* cai, **nenhuma outra máquina pode
 A execução prática do algoritmo de passagem de *token* supracitado funciona como o esperado, permitindo que apenas os nós com o *token* realizem operações críticas (transferências). 
 
 Além disso, situações adversas, como a queda de um nó, não representam o fim do sistema, sendo tratadas adequadamente. Assim, um novo *token* é gerado quando o atual se perde e em nenhum momento dois *token*s circulam na rede ao mesmo tempo.
-
-### Situação da transação concorrente
 
 ## Interface gráfica
 A fim de permitir que o usuário realize transferências, desenvolveu-se uma interface gráfica utilizando o *framework* ReactJS.
