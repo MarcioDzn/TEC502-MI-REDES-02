@@ -52,7 +52,6 @@ else:
 
 transfer_list = {}
 
-token = Token("active")
 generate_token = True
 is_transferring = False
 
