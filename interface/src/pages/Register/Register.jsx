@@ -84,7 +84,7 @@ export function Register() {
     return (
         <RegisterContainer>
             <RegisterContent>
-                <h1>Registre-se</h1>
+                <h1>Crie sua conta</h1>
                 <RegisterForm onSubmit={handleSubmitSignup(upHandleSubmit)}>
                     <TypeContainer>
                         <InputButton type={"button"} onClick={() => {setUserType(0); setAccountType(0)}} highlighted={(userType == 0).toString()} name="userType" id="pessoaFisica">Pessoa Física</InputButton>
