@@ -2,7 +2,7 @@
 <h1>TEC502 - Sistema de bancos distribuído</h1>
 </div>
 
-Devido à evolução tecnológica na sociedade capitalista em que vivemos, a movimentação de dinheiro deixou de ser feita apenas de maneira física, passando a ser também digital. Entretanto, a utilização de ferramentas eletrônicas para tal fim pode acarretar problemas, que podem resultar no comprometimento dos dados dos usuários. Este trabalho apresenta um sistema que permite a realização de transações bancárias entre diferentes contas e dispositivos de maneira segura e descentralizada. 
+Devido à evolução tecnológica na sociedade capitalista em que vivemos, a movimentação de dinheiro deixou de ser feita apenas de maneira física, passando a ser também digital. Entretanto, a utilização de ferramentas eletrônicas para tal fim pode acarretar problemas, que podem resultar no comprometimento dos dados dos usuários. Este trabalho apresenta um sistema que permite a realização de transações bancárias entre diferentes contas e dispositivos, de maneira segura e descentralizada. 
 
 A fim de garantir o funcionamento correto do projeto, implementou-se o protocolo HTTP para a comunicação entre os servidores que o integram. Ademais, para o desenvolvimento de seus módulos, utilizou-se o *framework* *Flask*, em *Python*, para a criação da *API REST*. Já para a criação da interface gráfica, utilizou-se *ReactJS*, junto a *frameworks* como *Axios* e *Tanstack* para o consumo da *API REST* desenvolvida. Por fim, para a execução dos componentes do projeto, utilizou-se a ferramenta *Docker*.
 
@@ -370,7 +370,7 @@ STATUS: 200
     } 
 ```
 
-##### PATCH /rollback FAZER FAZER FAZER
+##### PATCH /rollback 
 Rota responsável pela transferência de saldo entre as contas de origem e de destin durante uma transferência.
 
 Corpo da requisição:
@@ -493,12 +493,12 @@ A comunicação entre os servidores se dá através de requisições HTTP, seja 
 #### Transferências
 Transferências bancárias são parte fundamental para o funcionamento do projeto em questão. Nesse sentido, é possível realizar transferências entre diferentes contas, sejam elas do mesmo banco, ou de bancos diferentes.
 
-Ademais, o sistema permite ao usuário realizar tanto uma transferência unitária, quanto um conjunto de transferências por vez, que será chamado neste documento de operação. Para exemplificar, em uma mesma transação, um usuário com contas nos bancos A, B e C pode realizar transferências desses bancos para uma conta qualquer no banco D, de uma vez só.
+Ademais, o sistema permite ao usuário realizar tanto uma transferência unitária, quanto um conjunto de transferências por vez, que será chamado neste documento de **operação**. Para exemplificar, em uma mesma transação, um usuário com contas nos bancos A, B e C pode realizar transferências desses bancos para uma conta qualquer no banco D, de uma vez só.
 
 ##### Transação atômica
-Devido ao caráter crítico das transferências em um sistema bancário, é de suma importância que quaisquer erros que venham a ocorrer durante esse processo sejam tratados adequadamente. Caso um problema ocorra, dados podem ficar inconsistentes, resultando em perdas ou ganhos monetários injustos.
+Devido ao caráter crítico das transferências em um sistema bancário, é de suma importância que quaisquer erros que venham a ocorrer durante esse processo sejam tratados adequadamente. Caso um problema ocorra e não tenha a intervenção necessária, dados podem ficar inconsistentes, resultando em perdas ou ganhos monetários injustos.
 
-Para garantir a confiabilidade dessa operação, utilizou-se o conceito de  **transação atômica**, a qual é uma operação que deve ser executada na íntegra, caso se tenha sucesso, ou seja interrompida por completo caso algum erro ocorra. 
+Para garantir a confiabilidade desse processo, utilizou-se o conceito de  **transação atômica**, uma operação que deve ser executada na íntegra, caso se tenha sucesso, ou ser interrompida por completo caso algum erro ocorra. 
 
 O protocolo escolhido para implementar a transação atômica nesse sistema foi baseado no 2PC, ou *Two-Phase Commit Protocol*, um algoritmo distribuído entre processos interconectados, com algumas adaptações. Dessa forma, o protocolo empregado para a implementação de transações atômicas conta com três fases distintas: *prepare*, *commit* e *rollback*.
 
@@ -507,7 +507,7 @@ A fase de *prepare* está relacionada a preparação dos bancos para que ocorra 
 
 Inicialmente verifica-se se é possível conectar-se ao banco onde se encontra a conta destinatária, e em caso positivo, examina-se se ela existe. 
 
-Em seguida, verifica-se se é possível estabelecer uma conexão com o banco que contém a conta de origem da transação e se ela existe. Se essa conta estiver disponível, verifica-se se ela contém saldo suficiente para realizar a transação. Se o saldo disponível for satisfatório, ele é reservado para realizar a transferência.
+Em seguida, verifica-se se é possível estabelecer uma conexão com o banco que contém a conta de origem da transação e se tal conta realmente existe. Se essa conta estiver disponível, verifica-se se ela contém saldo suficiente para realizar a transação. Se o saldo disponível for satisfatório, ele é reservado para realizar a transferência.
 
 ###### Commit
 A fase de *commit* ocorre após a de praparação, e representa a transferência em si dos valores alocados durante a fase anterior.
@@ -515,7 +515,7 @@ A fase de *commit* ocorre após a de praparação, e representa a transferência
 Durante essa etapa, o saldo necessário é de fato removido da conta de origem e depositado na conta de destino.
 
 ###### Rollback
-A fase de *rollback* é responsável por refazer as transferências em caso de erro nas fases anteriores. Como a transação deve ser atômica, se houver algum erro, tudo que já foi realizado deve ser desfeito, a fim de garantir que não haja nenhuma inconsistência.
+A fase de *rollback* é responsável por refazer as transferências em caso de erro nas fases anteriores. Como a transação deve ser atômica, se houver algum erro, tudo que já foi realizado, seja da conta de origem ou de destino, deve ser desfeito, a fim de garantir que não haja nenhuma inconsistência.
 
 Dessa forma, suponha que uma operação com 3 transações esteja ocorrendo, e as duas primeiras tenham sido executadas com sucesso. Caso a terceira transação falhe, as duas transferências anteriores, mesmo que tenham sido realizadas com sucesso, são desfeitas, retirando dinheiro de quem recebeu, e devolvendo a quem "perdeu".
 
@@ -530,16 +530,16 @@ Dessa forma, sempre que uma nova operação, ou grupo de transferências, é req
   <br/>
 </div>
 
-Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário adicionar *locks*. Dessa forma apenas um dos processos pode manipular o dicionário de operações por vez, impedindo que possíveis problemas de concorrência e inconsistência de dados ocorram.
+Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário adicionar *locks*. Dessa forma, apenas um dos processos pode manipular o dicionário de operações por vez, impedindo que possíveis problemas de concorrência ocorram.
 
 
 ### Concorrência distribuída 
-A fim de evitar problemas relacionados à concorrência no sistema, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "token" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode realizar uma operação por vez, evitando comportamentos inesperados.
+A fim de evitar problemas relacionados à concorrência no sistema, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "*token*" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode realizar uma operação por vez, evitando comportamentos inesperados.
 
-O token é representado por um objeto com dois atributos, um status, que indica se está ativo ou não na máquina e um id, um número inteiro utilizado em casos em que o token se perde. 
+O *token* é representado por um objeto com dois atributos, um status, que indica se está ativo ou não na máquina e um id, um número inteiro utilizado em casos em que o *token* se perde. 
 
 #### Funcionamento teórico
-Quando o sistema inicia, apenas uma máquina deve possuir o token, tendo o status de seu objeto definido como "active", enquanto os demais nós apresentam status "undefined". Além disso, todas as máquinas setam o um id inicial para seu token, sendo ele `id = 0`.
+Quando o sistema inicia, apenas uma máquina deve possuir o *token*, tendo o *status* de seu objeto definido como "*active*", enquanto os demais nós apresentam status "*undefined*". Além disso, todas as máquinas setam o um id inicial para seu *token*, sendo ele `id = 0`.
 
 <div align="center">
   <img src="media/token-start.png" alt="Disposição do token quando ocorre a inicialização do sistema." height="450px" width="auto" />
@@ -547,11 +547,11 @@ Quando o sistema inicia, apenas uma máquina deve possuir o token, tendo o statu
   <br/>
 </div>
 
-Sempre que um nó possui um token, ele deve ser passado para outra máquina em um certo perído de tempo, definido ou indefinido, a depender da situação. Caso nenhuma operação (conjunto de transferências) esteja sendo realizada, o token é passado para outro nó após 1 segundo desde sua chegada. Caso uma operação estiver sendo realizada, aguarda-se a sua finalização para que o token possa ser transferido.
+Sempre que um nó possui um *token*, ele deve ser passado para outra máquina em um certo perído de tempo, definido ou indefinido, a depender da situação. Caso nenhuma operação (conjunto de transferências) esteja sendo realizada, o *token* é passado para outro nó após 1 segundo desde sua chegada. Caso uma operação esteja sendo realizada, aguarda-se a sua finalização para que o *token* possa ser transferido.
 
 > A função responsável pela passagem do token é a `send_token`, no arquivo `app.py`.
 
-A passagem de token de uma máquina a outra se dá por meio do protocolo HTTP, e é realizado na ordem dos itens do dicionário de bancos presente no nó. Quando o banco de indíce 0 está com o token ele tenta passar para o banco de índice 1 e assim por diante. 
+A passagem de *token* de uma máquina a outra se dá por meio do protocolo HTTP, e é realizado na ordem dos itens do dicionário de bancos presente no nó. Quando o banco de indíce 0 está com o *token* ele tenta passar para o banco de índice 1 e assim por diante. 
 
 <div align="center">
   <img src="media/token-pass.gif" alt="Passagem do token pela rede." height="450px" width="auto" />
@@ -559,17 +559,17 @@ A passagem de token de uma máquina a outra se dá por meio do protocolo HTTP, e
   <br/>
 </div>
 
-Também existe a possibilidade de que mesmo disponível, um banco não possa receber um token. Tal situação ocorre quando o id do token sendo enviado é **menor** que o id do token que o banco receptor armazena, significando que este token é inválido, sendo descartado da rede.
+Também existe a possibilidade de que mesmo disponível, um banco não possa receber um *token*. Tal situação ocorre quando o id do *token* sendo enviado é **menor** que o id do *token* que o banco receptor armazena, significando que este *token* é inválido, sendo descartado da rede.
 
-Quando uma máquina toma posse de um token ela é livre para realizar suas tarefas, no caso transferências bancárias. Entretanto, outras ações, como criação e busca de contas, autenticação, etc. não dependem da presença do token, podendo ser realizadas livremente.
+Quando uma máquina toma posse de um *token* ela é livre para realizar suas tarefas, no caso transferências bancárias. Entretanto, outras ações, como criação e busca de contas, autenticação, etc. não dependem da presença do *token*, podendo ser realizadas livremente.
 
 ##### Confiabilidade
-Para que tudo funcione da maneira esperada, fez-se necessário garantir que mesmo em situações adversas, como a queda da conexão de um ou mais nós, o sistema continue ativo. Dessa forma, duas situações em especial podem ocorrer, sendo elas a queda de um nó que não possui o token e a queda de um nó que possui o token. 
+Para que tudo funcione da maneira esperada, fez-se necessário garantir que mesmo em situações adversas, como a queda da conexão de um ou mais nós, o sistema continue ativo. Dessa forma, duas situações em especial podem ocorrer, sendo elas a queda de um nó que não possui o *token* e a queda de um nó que possui o *token*. 
 
-###### Máquina sem o token caiu
-Nessa situação, quando um nó tentar se comunicar com a máquina que caiu, não haverá conexão, não sendo possível passar o token. A máquina que quer repassar o token então busca na lista de bancos o banco seguinte ao desconectado, e tenta conectar-se a ele. 
+###### Máquina sem o *token* caiu
+Nessa situação, quando um nó tentar se comunicar com a máquina que caiu, não haverá conexão, não sendo possível passar o *token*. A máquina que quer repassar o *token* então busca na lista de bancos o banco seguinte ao desconectado, e tenta conectar-se a ele. 
 
-Em suma, o nó que quer repassar o token buscará sempre um nó disponível para transmiti-lo, pulando aqueles que não se encontram online.
+Em suma, o nó que quer repassar o *token* buscará sempre um nó disponível para transmiti-lo, pulando aqueles que não se encontram online.
 
 Ademais, os servidores que permaneceram conectados **continuarão funcionando e se comunicando normalmente** entre si.
 
@@ -579,20 +579,20 @@ Ademais, os servidores que permaneceram conectados **continuarão funcionando e 
   <br/>
 </div>
 
-###### Máquina com o token caiu
-Caso uma máquina que esteja em posse do token perca conexão com a rede, os demais nós não poderão realizar nenhuma transferência, pois o token deixou de circular entre os participantes conectados.
+###### Máquina com o *token* caiu
+Caso uma máquina que esteja em posse do *token* perca conexão com a rede, os demais nós não poderão realizar nenhuma transferência, pois o *token* deixou de circular entre os participantes conectados.
 
-Nessa situação, um novo token deve ser gerado, a fim de que o sistema possa voltar a funcionar. Para que isso ocorra, fez-se necessário implementar um mecanismo de recuperação, que identifica quando o token deixou de circular e gera um novo.
+Nessa situação, um novo *token* deve ser gerado, a fim de que o sistema possa voltar a funcionar. Para que isso ocorra, fez-se necessário implementar um mecanismo de recuperação, que identifica quando o *token* deixou de circular e gera um novo.
 
-Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o token. Dessa forma, sempre que um banco passa o token, o contador começa a funcionar, sendo zerado quando o token volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo *t* identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo. O tempo *t* depende da quantidade de máquinas disponíveis na rede, sendo: $$ t = (\text{número de máquinas online}) \times 3 $$.
+Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o *token*. Dessa forma, sempre que um banco passa o *token*, o seu contador começa a funcionar, sendo zerado quando o *token* volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo *t* identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo. O tempo *t* depende da quantidade de máquinas disponíveis na rede, sendo: $$ t = (\text{número de máquinas online}) \times 3 $$.
 
 > O timer é implementado na função `verify_token_active`, no arquivo `app.py`.
 
-A máquina que atingiu o tempo limite envia uma mensagem para todos os outros nós ativos da rede, perguntando se já existe um token na rede. Caso não exista, o novo token é gerado e uma segunda mensagem é enviada a todos os nós, informando que um novo token foi criado. A partir desse momento, o contador dos nós remanescentes é zerado, a fim de que nenhum outro token seja originado, o que poderia resultar em multiplos tokens na rede.
+A máquina que atingiu o tempo limite envia uma mensagem para todos os outros nós ativos da rede, perguntando se já existe um *token* na rede. Caso não exista, o novo *token* é gerado e uma segunda mensagem é enviada a todos os nós, informando que um novo *token* foi criado. A partir desse momento, o contador dos nós remanescentes é zerado, a fim de que nenhum outro *token* seja originado, o que poderia resultar em multiplos *token*s na rede.
 
-A segunda mensagem supracitada também contém o novo id do token criado, que é `o id antigo + 1`. Dessa forma, todos os nós *online*, incluindo o que gerou o *token*, passam a ter seu id de token atualizado.
+A segunda mensagem supracitada também contém o novo id do *token* criado, que é `o id antigo + 1`. Dessa forma, todos os nós *online*, incluindo o que gerou o *token*, passam a ter seu id de *token* atualizado.
 
-> A função responsável por perguntar se já existe um token na rede do token é `ask_for_token` e a por informar que o token foi criado, bem como propagar o novo id é a `change_token_id`, ambas arquivo `app.py`.
+> A função responsável por perguntar se já existe um token na rede do token é `ask_for_token` e a por informar que o token foi criado, bem como propagar o novo id é a `change_token_id`, ambas no arquivo `app.py`.
 
 
 <div align="center">
@@ -602,9 +602,9 @@ A segunda mensagem supracitada também contém o novo id do token criado, que é
 </div>
 
 
-A atualização do id é importante pois caso o nó que caiu com o token retorne, ele tentará enviar seu próprio token, desatualizado, pela rede, o que poderia gerar tokens duplicados. Como o token desse nó possui um id antigo, ele é descartado pelo nó seguinte, que possui um id de token maior, o identificando como inválido.
+A atualização do id é importante pois caso o nó que caiu com o *token* retorne, ele tentará enviar seu próprio *token*, desatualizado, pela rede, o que poderia gerar *token*s duplicados. Como o *token* desse nó possui um id antigo, ele é descartado pelo nó seguinte, que possui um id de *token* maior.
 
-Em resumo, quando uma máquina com um token cai, **nenhuma outra máquina pode realizar transferências até que um novo token seja gerado**. Quando um novo token é originado, o sistema passa a funcionar normalmente, com exceção da máquina que caiu. Além disso, quando o nó com o token antigo retorna à rede, isso não é um problema, já que ele é descartado e eventualmente substituído pelo token atualizado.
+Em resumo, quando uma máquina com um *token* cai, **nenhuma outra máquina pode realizar transferências até que um novo *token* seja gerado**. Quando um novo *token* é originado, o sistema passa a funcionar normalmente, com exceção da máquina que caiu. Além disso, quando o nó com o *token* antigo retorna à rede, isso não é um problema, já que ele é descartado e substituído pelo *token* atualizado.
 
 <div align="center">
   <img src="media/token-recover.gif" alt="Máquina com o token que caiu retornou." height="450px" width="auto" />
@@ -613,9 +613,9 @@ Em resumo, quando uma máquina com um token cai, **nenhuma outra máquina pode r
 </div>
 
 #### Funcionamento prático
-A execução prática do algoritmo de passagem de token supracitado funciona como o esperado, permitindo que apenas os nós com o token realizem operações críticas (transferências). 
+A execução prática do algoritmo de passagem de *token* supracitado funciona como o esperado, permitindo que apenas os nós com o *token* realizem operações críticas (transferências). 
 
-Além disso, situações adversas, como a queda de um nó, não representam o fim do sistema, sendo tratadas adequadamente. Assim, um novo token é gerado quando o atual se perde e em nenhum momento dois tokens circulam na rede ao mesmo tempo.
+Além disso, situações adversas, como a queda de um nó, não representam o fim do sistema, sendo tratadas adequadamente. Assim, um novo *token* é gerado quando o atual se perde e em nenhum momento dois *token*s circulam na rede ao mesmo tempo.
 
 ### Situação da transação concorrente
 
@@ -694,7 +694,7 @@ Caso um usuário deseje realizar uma ou mais transferências, o mesmo deve clica
 Ao fim da adição de informações o usuário deve clicar em `Confirmar Transferência(s)`, fechando automaticamente o modal. Após isso, para realizar de fato a(s) transferência(s), o usuário deve pressionar o botão `Realizar Transferência`.
 
 ## Conclusão
-O sistema cumpre com todos os requisitos definidos, sendo capaz de realizar transações atômicas sobre o dinheiro em contas de outro banco, envolvendo uma ou mais contas. Ademais, a comunicação entre os bancos e com os usuários finais foi feita utilizando o protocolo HTTP, através de uma API REST. Além disso, implementações contra possíveis problemas de concorrência foram desenvolvidas, como um algoritmo de passagem de token, evitando problemas indesejados.
+O sistema cumpre com todos os requisitos definidos, sendo capaz de realizar transações atômicas sobre o dinheiro em contas de outro banco, envolvendo uma ou mais contas. Ademais, a comunicação entre os bancos e com os usuários finais foi feita utilizando o protocolo HTTP, através de uma API REST. Além disso, implementações contra possíveis problemas de concorrência foram desenvolvidas, como um algoritmo de passagem de *token*, evitando problemas indesejados.
 
 Por fim, a execução do sistema em diversas máquinas e ambientes se dá através da ferramenta *Docker*.
 
