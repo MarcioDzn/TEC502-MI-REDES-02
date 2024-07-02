@@ -490,7 +490,18 @@ def get_all_account_interbanks(id):
                 pass
             
     results = [item for sublist in results for item in sublist]
-    return jsonify({"data": results}), 200
+
+    # impedir contas repetidas
+    unique_ids = set()
+
+    filtered_results = []
+
+    for item in results:
+        if item['_id'] not in unique_ids:
+            unique_ids.add(item['_id'])
+            filtered_results.append(item)
+
+    return jsonify({"data": filtered_results}), 200
 
 
 def send_transfer_request(url, data):
