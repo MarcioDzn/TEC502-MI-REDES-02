@@ -627,6 +627,12 @@ A partir da interface é possível:
 - Logar em um conta já existente
 - Realizar transferências bancárias entre diferentes contas
 
+<div align="center">
+  <img src="media/landing-page.png" alt="Página inicial" height="300px" width="auto" />
+  <br/> <em>Figura 19. Página inicial.</em> <br/>
+  <br/>
+</div>
+
 ### Autenticação
 Para poder realizar transferências o usuário precisa primeiro ter uma conta, portanto, é necessário que o mesmo crie uma, podendo acessá-la posteriormente.
 
@@ -644,7 +650,7 @@ Nessa página é possível criar uma conta a partir das seguintes informações:
 
 <div align="center">
   <img src="media/register-page.png" alt="Página de registro." height="300px" width="auto" />
-  <br/> <em>Figura 19. Página de registro.</em> <br/>
+  <br/> <em>Figura 20. Página de registro.</em> <br/>
   <br/>
 </div>
 
@@ -661,7 +667,7 @@ Já a página de login, acessada a partir da URL `http://localhost:3000/login` p
 
 <div align="center">
   <img src="media/login-page.png" alt="Página de login." height="300px" width="auto" />
-  <br/> <em>Figura 20. Página de login.</em> <br/>
+  <br/> <em>Figura 21. Página de login.</em> <br/>
   <br/>
 </div>
 
@@ -674,7 +680,7 @@ Ademais, no canto inferior direito é possível visualizar as transferências pe
 
 <div align="center">
   <img src="media/main-page.png" alt="Página principal." height="300px" width="auto" />
-  <br/> <em>Figura 21. Página principal.</em> <br/>
+  <br/> <em>Figura 22. Página principal.</em> <br/>
   <br/>
 </div>
 
@@ -687,7 +693,7 @@ Caso um usuário deseje realizar uma ou mais transferências, o mesmo deve clica
 > A conta e agência de origem são limitadas às pertencentes ao usuário.
 <div align="center">
   <img src="media/add-transfer.png" alt="Modal de adicionar transferência." height="300px" width="auto" />
-  <br/> <em>Figura 22. Modal de adicionar transferência.</em> <br/>
+  <br/> <em>Figura 23. Modal de adicionar transferência.</em> <br/>
   <br/>
 </div>
 
