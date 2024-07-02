@@ -1,7 +1,7 @@
 import axios from "axios"
-
-const baseURL = "http://localhost:8080/v1/api"
 import Cookies from "js-cookie";
+
+const baseURL = `http://${Cookies.get("agency")}/v1/api`
 
 export async function transfer(data) {
     const account_cpf = data.account_cpf

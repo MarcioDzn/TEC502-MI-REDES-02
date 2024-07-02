@@ -1,6 +1,7 @@
 import axios from "axios"
+import Cookies from "js-cookie";
 
-const baseURL = "http://localhost:8080/v1/api"
+const baseURL = `http://${Cookies.get("agency")}/v1/api`
 
 export async function getAllAccounts(id) {
     const response = await axios.get(`${baseURL}/accounts/all/${id}`)
