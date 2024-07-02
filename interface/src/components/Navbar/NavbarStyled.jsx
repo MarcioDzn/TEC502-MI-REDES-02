@@ -1,4 +1,4 @@
-import {styled} from "styled-components"
+import {styled, keyframes} from "styled-components"
 
 export const NavbarContainer = styled.nav`
     position: relative;
@@ -16,9 +16,43 @@ export const NavbarContainer = styled.nav`
     }
 `
 
-export const LogoContainer = styled.div`
+const shine = keyframes`
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+`;
 
-`
+export const LogoContainer = styled.div`
+  color: #c40000;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+
+  h1 {
+    position: relative;
+    font-size: 1.5rem;
+    z-index: 1;
+    cursor: pointer; 
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+      transition: none; 
+    }
+
+    &:hover::before {
+      animation: ${shine} 1s cubic-bezier( 0.11, 0, 0.59, -0.05 ); 
+    }
+  }
+`;
 
 
 export const Button = styled.button`
