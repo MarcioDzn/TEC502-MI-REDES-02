@@ -535,12 +535,12 @@ Percebe-se então que dois ou mais usuários podem realizar transações ao mesm
 
 
 ### Concorrência distribuída 
-A fim de evitar problemas relacionados à concorrência no sistema, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "*token*" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode realizar uma operação por vez, evitando comportamentos inesperados.
+Para evitar problemas de concorrência, como a manipulação de uma mesma conta por dois ou mais bancos, podendo gerar valores inconsistentes, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "*token*" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode executar uma operação por vez, evitando situações indesejadas.
 
 O *token* é representado por um objeto com dois atributos, um status, que indica se está ativo ou não na máquina e um id, um número inteiro utilizado em casos em que o *token* se perde. 
 
 #### Funcionamento teórico
-Quando o sistema inicia, apenas uma máquina deve possuir o *token*, tendo o *status* de seu objeto definido como "*active*", enquanto os demais nós apresentam status "*undefined*". Além disso, todas as máquinas setam o um id inicial para seu *token*, sendo ele `id = 0`.
+Quando o sistema inicia, apenas uma máquina deve possuir o *token*, tendo o *status* de seu objeto definido como "*active*", enquanto os demais nós apresentam status "*undefined*", indicando que não o possuem. Além disso, todas as máquinas setam o um id inicial para seu *token*, sendo ele `id = 0`.
 
 <div align="center">
   <img src="media/token-start.png" alt="Disposição do token quando ocorre a inicialização do sistema." height="450px" width="auto" />
