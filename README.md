@@ -51,7 +51,7 @@ docker build -t <nome_da_imagem> .
 3. Execute o comando: 
 
 ```bash
-docker container run -it -p 8080:8080 -e CURRENT_BANK=<indice_do_banco> -e BANKS=<ip_do_banco_0>::<ip_do_banco_1>::<ip_do_banco_n> <nome_da_imagem>
+docker container run -it -p 8080:8080 -e CURRENT_BANK=<indice_do_banco> -e BANKS=<ip_do_banco_0>:8080::<ip_do_banco_1>:8080::<ip_do_banco_n>:8080 <nome_da_imagem>
 ```
 
 ### Interface 
@@ -61,7 +61,7 @@ cd TEC502-MI-REDES-02
 ```
 2. Execute o comando: 
 ```bash
-docker compose up client –build
+docker compose up client --build
 ```
 3. Acesse a aplicação em [http://localhost:3000](http://localhost:3000)
 
@@ -529,9 +529,9 @@ Dessa forma, sempre que uma nova operação, ou grupo de transferências, é req
   <br/>
 </div>
 
-Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário adicionar *locks*. Dessa forma, apenas um dos processos pode manipular o dicionário de operações por vez, impedindo que possíveis problemas de concorrência ocorram.
+Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário travá-la com o mecanismo de *lock*. Dessa forma, sempre que dois ou mais processos tentam manipular o dicionário, apenas um consegue de fato, fazendo os outros aguardarem a sua vez. Assim, cada processo só pode manipular a fila quando nenhum outro está fazendo isso, garantindo que problemas de natureza concorrente não ocorram.
 
-Assim, dois ou mais usuários podem realizar transações ao mesmo tempo no mesmo banco sem que problemas de natureza concorrente se apresentem.
+Percebe-se então que dois ou mais usuários podem realizar transações ao mesmo tempo no mesmo banco.
 
 
 ### Concorrência distribuída 
@@ -636,7 +636,7 @@ A partir da interface é possível:
 Para poder realizar transferências o usuário precisa primeiro ter uma conta, portanto, é necessário que o mesmo crie uma, podendo acessá-la posteriormente.
 
 #### Registro
-A tela de registro pode ser acessada por meio da URL `http://<ip>:3000/register`, onde `ip` é o ip da máquina executando a interface.
+A tela de registro pode ser acessada por meio da URL `http://<ip>:3000/register`, na qual `ip` é o ip da máquina executando a interface.
 
 Nessa página é possível criar uma conta a partir das seguintes informações:
 - Tipo de conta (normal ou conjunta)
@@ -656,7 +656,7 @@ Nessa página é possível criar uma conta a partir das seguintes informações:
 > Caso o usuário deseje criar uma conta conjunta, dois nomes e dois CPFs deverão ser informados.
 
 #### Login
-Já a página de login, acessada a partir da URL `http://localhost:3000/login` permite a um usuário entrar em uma conta que já foi cadastrada, a partir dos seguintes dados:
+Já a página de login, acessada a partir da URL `http://<ip>:3000/login`, na qual `ip` é o ip da máquina executando a interface, permite a um usuário entrar em uma conta que já foi cadastrada, a partir dos seguintes dados:
 
 - CPF (pessoa física)
 - CNPJ (pessoa jurídica)
@@ -671,7 +671,7 @@ Já a página de login, acessada a partir da URL `http://localhost:3000/login` p
 </div>
 
 ### Página inicial
-A página inicial pode ser acessada a partir da rota `http://localhost:3000/app`.
+A página inicial pode ser acessada a partir da rota `http://<ip>:3000/app`, na qual `ip` é o ip da máquina executando a interface.
 
 Tal página mostra informações do usuário logado no momento, bem como suas contas em outros bancos. 
 
