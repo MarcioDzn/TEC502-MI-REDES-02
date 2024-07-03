@@ -12,9 +12,6 @@ from time import sleep, time
 from threading import Thread, Lock
 import os
 
-
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 account_db = AccountDatabase()
 user_db = UserDatabase()
 
@@ -23,6 +20,7 @@ CORS(app)
 
 transfer_lock = Lock()
 transfer_list_lock = Lock()
+account_lock = Lock()
 
 CURRENT_BANK = int(os.getenv('CURRENT_BANK'))
 print(CURRENT_BANK)
@@ -301,12 +299,6 @@ def register_account():
             # o CPF dos dois usuários não podem ser iguais
             if (primary_cpf == secondary_cpf):
                 return jsonify({"message":"O CPF dos dois usuários não podem ser iguais"}), 400
-        
-    # deve haver apenas uma conta conjunta com um determinado CPF
-        pass
-
-    # deve haver apenas uma conta normal com um determinado CPF ou CNPJ
-        pass
 
     # se o usuário já existe não precisa criar
     if (user_type == "fisica"):
@@ -315,36 +307,32 @@ def register_account():
     if user_type == "juridica":
         user = user_db.get_user_by_cnpj(cnpj)
     
-    print("[PRIMARY_CPF]: {}".format(primary_cpf))
-    print("[CNPJ]: {}".format(cnpj))
-    print("[USER]: {}".format(user))
-
-    if user: 
-        primary_user = user
-    else:
-        # criando o usuário assim que cadastrado
-        id = 0 if len(list(user_db.users_db.items())) == 0 else (user_db.get_all_users()[-1]["_id"] + 1)
-        print("[NOVO ID]: {}".format(id))
-        primary_user = UserModel(primary_name, user_type, primary_cpf, id, cnpj)
-        user_db.create_user(primary_user)
-
-    secondary_user = None
-    if (account_type == "conjunta"):
-        user = user_db.get_user_by_cpf(secondary_cpf)
+    with account_lock: 
         if user: 
-            secondary_user = user
+            primary_user = user
         else:
+            # criando o usuário assim que cadastrado
             id = 0 if len(list(user_db.users_db.items())) == 0 else (user_db.get_all_users()[-1]["_id"] + 1)
-            secondary_user = UserModel(secondary_name, user_type, secondary_cpf, id)
-            user_db.create_user(secondary_user)
+            primary_user = UserModel(primary_name, user_type, primary_cpf, id, cnpj)
+            user_db.create_user(primary_user)
 
-    new_account = AccountModel(primary_user, secondary_user, password, account_type)
+        secondary_user = None
+        if (account_type == "conjunta"):
+            user = user_db.get_user_by_cpf(secondary_cpf)
+            if user: 
+                secondary_user = user
+            else:
+                id = 0 if len(list(user_db.users_db.items())) == 0 else (user_db.get_all_users()[-1]["_id"] + 1)
+                secondary_user = UserModel(secondary_name, user_type, secondary_cpf, id)
+                user_db.create_user(secondary_user)
 
-    account_db.create_account(new_account)
+        new_account = AccountModel(primary_user, secondary_user, password, account_type)
 
-    auth_token = generate_jwt_token(new_account._id, 
-                                primary_cpf if primary_cpf else cnpj, 
-                                password)
+        account_db.create_account(new_account)
+
+        auth_token = generate_jwt_token(new_account._id, 
+                                    primary_cpf if primary_cpf else cnpj, 
+                                    password)
 
     return jsonify({"message": "Conta criada com sucesso", "token": auth_token}), 201
 
