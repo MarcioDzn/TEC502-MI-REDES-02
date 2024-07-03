@@ -532,11 +532,11 @@ def transfer_funds():
         else:
             operation_id = max(transfer_list.keys()) + 1
 
-    transfer_list[operation_id] = []
-    for index, transf in enumerate(transfers):
-        transfer_list[operation_id].append(TransferModel(index, operation_id, "pending", transf["amount"], 
-                                 transf["source"], transf["account_source_id"], 
-                                 transf["destination"], transf["account_dest_id"]))
+        transfer_list[operation_id] = []
+        for index, transf in enumerate(transfers):
+            transfer_list[operation_id].append(TransferModel(index, operation_id, "pending", transf["amount"], 
+                                    transf["source"], transf["account_source_id"], 
+                                    transf["destination"], transf["account_dest_id"]))
     
     print("[LISTA DE TRANSFERÊNCIAS]: {}".format(transfer_list))
     # aguarda até o token estar ativo para processar as requisições
@@ -551,7 +551,8 @@ def transfer_funds():
     while list(transfer_list.keys()).index(operation_id) != 0 or token.status != "active":
         pass
     
-    is_transferring = True
+    with transfer_lock:
+        is_transferring = True
 
     transfer_logs = []
     for index, operation in enumerate(transfer_list[operation_id]):
