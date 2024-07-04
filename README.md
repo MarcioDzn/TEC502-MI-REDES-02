@@ -585,7 +585,7 @@ Caso uma máquina que esteja em posse do *token* perca conexão com a rede, os d
 
 Nessa situação, um novo *token* deve ser gerado, a fim de que o sistema possa voltar a funcionar. Para que isso ocorra, fez-se necessário implementar um mecanismo de recuperação, que identifica quando o *token* deixou de circular e gera um novo.
 
-Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o *token*. Dessa forma, sempre que um banco passa o *token*, o seu contador começa a funcionar, sendo zerado quando o *token* volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo *t* identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo. O tempo *t* depende da quantidade de máquinas disponíveis na rede, sendo: $$ t = (\text{número de máquinas online}) \times 3 $$.
+Nesse sentido, cada máquina possui um *timer*, que conta o tempo que um determinado nó está sem o *token*. Dessa forma, sempre que um banco passa o *token*, o seu contador começa a funcionar, sendo zerado quando o *token* volta a esse nó. Caso o token não retorne a essa máquina depois de um certo tempo *t* identifica-se que o mesmo deixou de circular na rede, tornando-se necessário originar um novo. O tempo *t* depende da quantidade de máquinas disponíveis na rede, sendo: `t = (número de máquinas online x tempo de espera para passar o token) x 3`.
 
 > O timer é implementado na função `verify_token_active`, no arquivo `app.py`.
 

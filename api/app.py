@@ -110,7 +110,7 @@ def send_token():
     while True: 
         WAIT_TIME = 1
         # tempo de espera até o token retornar desde que saiu
-        WAIT_TOKEN_TIME = (WAIT_TIME + len(banks)) * 3 
+        WAIT_TOKEN_TIME = (WAIT_TIME * len(banks)) * 3 
 
         next_bank = CURRENT_BANK + 1
 
