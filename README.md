@@ -53,6 +53,8 @@ docker build -t <nome_da_imagem> .
 ```bash
 docker container run -it -p 8080:8080 -e CURRENT_BANK=<indice_do_banco> -e BANKS=<ip_do_banco_0>:8080::<ip_do_banco_1>:8080::<ip_do_banco_n>:8080 <nome_da_imagem>
 ```
+> O campo BANKS deve ser o mesmo em todos os nós participantes da rede. 
+CURRENT_BANK é o índice que corresponde ao banco que determinado nó representa, começando por 0.
 
 ### Interface 
 1. Navegue até o diretório principal:
