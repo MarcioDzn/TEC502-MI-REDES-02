@@ -494,14 +494,14 @@ A comunicação entre os servidores se dá através de requisições HTTP, seja 
 #### Transferências
 Transferências bancárias são parte fundamental para o funcionamento do projeto em questão. Nesse sentido, é possível realizar transferências entre diferentes contas, sejam elas do mesmo banco, ou de bancos diferentes.
 
-Ademais, o sistema permite ao usuário realizar tanto uma transferência unitária, quanto um conjunto de transferências por vez, que será chamado neste documento de **operação**. Para exemplificar, em uma mesma transação, um usuário com contas nos bancos A, B e C pode realizar transferências desses bancos para uma conta qualquer no banco D, de uma vez só.
+Ademais, o sistema permite ao usuário realizar tanto uma transferência unitária, quanto um conjunto de transferências por vez, que será chamado neste documento de **operação**. Para exemplificar, em uma mesma operação, um usuário com contas nos bancos A, B e C pode realizar transferências desses bancos para uma conta qualquer no banco D, de uma vez só.
 
 ##### Transação atômica
 Devido ao caráter crítico das transferências em um sistema bancário, é de suma importância que quaisquer erros que venham a ocorrer durante esse processo sejam tratados adequadamente. Caso um problema ocorra e não tenha a intervenção necessária, dados podem ficar inconsistentes, resultando em perdas ou ganhos monetários injustos.
 
 Para garantir a confiabilidade desse processo, utilizou-se o conceito de  **transação atômica**, uma operação que deve ser executada na íntegra, caso se tenha sucesso, ou ser interrompida por completo caso algum erro ocorra. 
 
-O protocolo escolhido para implementar a transação atômica nesse sistema foi baseado no 2PC, ou *Two-Phase Commit Protocol*, um algoritmo distribuído entre processos interconectados, com algumas adaptações. Dessa forma, o protocolo empregado para a implementação de transações atômicas conta com três fases distintas: *prepare*, *commit* e *rollback*.
+O protocolo escolhido para implementar a transação atômica nesse sistema foi baseado no 2PC, ou *Two-Phase Commit Protocol*, um algoritmo distribuído entre processos interconectados, com algumas adaptações. Dessa forma, este protocolo conta com três fases distintas: *prepare*, *commit* e *rollback*.
 
 ###### Prepare
 A fase de *prepare* está relacionada a preparação dos bancos para que ocorra a transação.
@@ -534,7 +534,7 @@ Dessa forma, sempre que uma nova operação, ou grupo de transferências, é req
 
 Como vários processos solicitando transferências podem tentar manipular a fila ao mesmo tempo, fez-se necessário travá-la com o mecanismo de *lock*. Dessa forma, sempre que dois ou mais processos tentam manipular o dicionário, apenas um consegue de fato, fazendo os outros aguardarem a sua vez. Assim, cada processo só pode manipular a fila quando nenhum outro está fazendo isso, garantindo que problemas de natureza concorrente não ocorram.
 
-Nesse sentido, o sistema garante que dois ou mais usuários possam realizar transações ao mesmo tempo no mesmo banco.
+Nesse sentido, o sistema garante que dois ou mais usuários possam solicitar transações ao mesmo tempo no mesmo banco, sem que este processo gere algum tipo de conflito.
 
 
 ### Concorrência distribuída 
