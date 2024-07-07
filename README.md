@@ -538,7 +538,7 @@ Nesse sentido, o sistema garante que dois ou mais usuários possam solicitar tra
 
 
 ### Concorrência distribuída 
-Para evitar problemas de concorrência, como a manipulação de uma mesma conta por dois ou mais bancos, podendo gerar valores inconsistentes, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "*token*" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode executar uma operação por vez, evitando situações indesejadas.
+Para evitar mais problemas de concorrência, como a manipulação de uma mesma conta por dois ou mais bancos, podendo gerar valores inconsistentes, empregou-se um algoritmo específico similar ao *Token Ring*. Tal algoritmo envolve a passagem de um "*token*" entre os nós participantes na rede, responsável por indicar quando uma máquina pode realizar suas tarefas pendentes. Assim, apenas um servidor pode executar uma operação por vez, evitando situações indesejadas.
 
 O *token* é representado por um objeto com dois atributos, um status, que indica se está ativo ou não na máquina e um id, um número inteiro utilizado em casos em que o *token* se perde. 
 
