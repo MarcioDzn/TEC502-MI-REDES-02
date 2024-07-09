@@ -26,10 +26,10 @@ A fim de garantir o funcionamento correto do projeto, implementou-se o protocolo
       - [Confiabilidade](#confiabilidade)
     - [Funcionamento prático](#funcionamento-prático)
 - [Interface gráfica](#interface-gráfica)
-  - [Autenticação](#autenticação)
+  - [Gerenciamento de Contas](#gerenciamento-de-contas-1)
     - [Registro](#registro)
     - [Login](#login)
-  - [Transferência](#transferência)
+  - [Criação e Realização de Transações](#criação-e-realização-de-transações)
 - [Conclusão](#conclusão)
 
 
@@ -76,7 +76,7 @@ O projeto é dividido em dois componentes principais:
     - Contém os arquivos referentes à interface gráfica, a qual permite ao usuário se registrar, efetuar login e realizar transferências.
 
 ## Banco
-Os bancos realizam as funcionalidades principais do projeto, permitindo a criação de contas e a realização de transferências. Nesse sentido, o banco é uma API REST que pode se comunicar tanto com um cliente (interface) quanto com outros bancos por meio do protocolo HTTP.
+Os bancos possibilitam a execução das funcionalidades principais do projeto, como a criação de contas e a realização de transferências. Nesse sentido, o banco é uma API REST que pode se comunicar tanto com um cliente (interface) quanto com outros bancos por meio do protocolo HTTP.
 
 ### Arquitetura 
 Os módulos principais utilizados no desenvolvimento do projeto são:
@@ -489,7 +489,7 @@ Respost:
 
 
 ### Comunicação entre os servidores
-A comunicação entre os servidores se dá através de requisições HTTP, seja para realizar buscas ou transferências.
+A comunicação entre os servidores se dá através do **protocolo HTTP**, o que possibilita a realização de buscas ou transferências entre os bancos.
 
 #### Transferências
 Transferências bancárias são parte fundamental para o funcionamento do projeto em questão. Nesse sentido, é possível realizar transferências entre diferentes contas, sejam elas do mesmo banco, ou de bancos diferentes.
@@ -638,7 +638,7 @@ A partir da interface é possível:
   <br/>
 </div>
 
-### Autenticação
+### Gerenciamento de Contas
 Para poder realizar transferências o usuário precisa primeiro ter uma conta, portanto, é necessário que o mesmo crie uma, podendo acessá-la posteriormente.
 
 #### Registro
@@ -689,7 +689,7 @@ Ademais, no canto inferior direito é possível visualizar as transferências pe
   <br/>
 </div>
 
-### Transferência
+###  Criação e Realização de Transações
 Caso um usuário deseje realizar uma ou mais transferências, o mesmo deve clicar no botão de `Adicionar Transferência`. Um modal será exibido, permitindo que sejam inseridas as seguintes informações:
 - Conta e agência de origem
 - Conta e agência de destino
