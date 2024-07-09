@@ -492,7 +492,7 @@ Respost:
 A comunicação entre os servidores se dá através do **protocolo HTTP**, o que possibilita a realização de buscas ou transferências entre os bancos.
 
 #### Transferências
-Transferências bancárias são parte fundamental para o funcionamento do projeto em questão. Nesse sentido, é possível realizar transferências entre diferentes contas, sejam elas do mesmo banco, ou de bancos diferentes.
+Transferências bancárias são parte fundamental para o funcionamento do projeto em questão. Nesse sentido, é possível realizar transferências entre diferentes contas, sejam elas do mesmo banco, e de bancos diferentes.
 
 Ademais, o sistema permite ao usuário realizar tanto uma transferência unitária, quanto um conjunto de transferências por vez, que será chamado neste documento de **operação**. Para exemplificar, em uma mesma operação, um usuário com contas nos bancos A, B e C pode realizar transferências desses bancos para uma conta qualquer no banco D, de uma vez só.
 
